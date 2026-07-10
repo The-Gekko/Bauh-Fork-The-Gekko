@@ -222,7 +222,7 @@ class SnapManager(SoftwareManager, SettingsController):
                 current_installed = self.read_installed(disk_loader=disk_loader, internet_available=net_available).installed
             except Exception:
                 new_installed = [pkg]
-                traceback.print_exc()
+                import logging; logging.error("Exception occurred", exc_info=True)
                 current_installed = None
 
             if current_installed:
@@ -374,7 +374,7 @@ class SnapManager(SoftwareManager, SettingsController):
             self.logger.error(f"Local Snap suggestions file not found: {self.suggestions_url}")
         except OSError:
             self.logger.error(f"Could not read local Snap suggestions file: {self.suggestions_url}")
-            traceback.print_exc()
+            import logging; logging.error("Exception occurred", exc_info=True)
 
     def _download_remote_suggestions_file(self) -> Optional[str]:
         self.logger.info(f"Downloading the Snap suggestions from {self.suggestions_url}")

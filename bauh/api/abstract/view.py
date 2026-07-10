@@ -338,3 +338,12 @@ class PanelComponent(ViewContainer):
 
     def __init__(self, components: List[ViewComponent], id_: str = None):
         super(PanelComponent, self).__init__(id_=id_, components=components)
+
+class ColorPickerComponent(InputViewComponent):
+
+    def __init__(self, id_: str, label: str, tooltip: str = None, value: str = None, max_width: int = -1):
+        super(ColorPickerComponent, self).__init__(id_=id_)
+        self.label = label
+        self.tooltip = tooltip
+        self.value = value
+        self.max_width = max_width

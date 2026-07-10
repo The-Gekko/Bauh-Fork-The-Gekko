@@ -105,7 +105,7 @@ class GenericSoftwareManager(SoftwareManager, SettingsController):
                 Popen(['timeshift-launcher'], stderr=STDOUT)
                 return True
             except Exception:
-                traceback.print_exc()
+                import logging; logging.error("Exception occurred", exc_info=True)
                 watcher.show_message(title=self.i18n["error"].capitalize(),
                                      body=self.i18n['action.backups.tool_error'].format(bold('Timeshift')),
                                      type_=MessageType.ERROR)
@@ -342,7 +342,7 @@ class GenericSoftwareManager(SoftwareManager, SettingsController):
                 self._update_post_transaction_status(res)
                 return res
             except Exception:
-                traceback.print_exc()
+                import logging; logging.error("Exception occurred", exc_info=True)
                 return TransactionResult(success=False, installed=[], removed=[])
             finally:
                 tf = time.time()
@@ -363,7 +363,7 @@ class GenericSoftwareManager(SoftwareManager, SettingsController):
                 self._update_post_transaction_status(res)
                 return res
             except Exception:
-                traceback.print_exc()
+                import logging; logging.error("Exception occurred", exc_info=True)
                 return TransactionResult(success=False, installed=[], removed=[])
             finally:
                 tf = time.time()

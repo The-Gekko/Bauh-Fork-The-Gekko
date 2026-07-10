@@ -11,8 +11,22 @@ from bauh import __app_name__, app_args
 from bauh.view.core.config import CoreConfigManager
 from bauh.view.util import logs
 
+def qt_message_handler(mode, context, message):
+    if 'Ignoring XDG_SESSION_TYPE=wayland' in message:
+        return
+    if 'QSocketNotifier: Can only be used with threads started with QThread' in message:
+        return
+    if 'invalid style override' in message:
+        return
+    if 'Wayland does not support QWindow::requestActivate' in message:
+        return
+    sys.stderr.write(f"{message}\n")
+
 
 def main(tray: bool = False):
+    from PyQt5.QtCore import qInstallMessageHandler
+    qInstallMessageHandler(qt_message_handler)
+    
     if not os.getenv('PYTHONUNBUFFERED'):
         os.environ['PYTHONUNBUFFERED'] = '1'
 
@@ -30,7 +44,7 @@ def main(tray: bool = False):
         locale.setlocale(locale.LC_NUMERIC, '')
     except Exception:
         logger.error("Could not set locale 'LC_NUMBERIC' to '' to display localized numbers")
-        traceback.print_exc()
+        import logging; logging.error("Exception occurred", exc_info=True)
 
     if args.offline:
         logger.warning("offline mode activated")
@@ -46,7 +60,7 @@ def main(tray: bool = False):
         os.environ['QT_SCALE_FACTOR'] = str(scale_factor)
         logger.info("Scale factor set to {}".format(scale_factor))
     except Exception:
-        traceback.print_exc()
+        import logging; logging.error("Exception occurred", exc_info=True)
 
     if bool(app_config['ui']['hdpi']):
         logger.info("HDPI settings activated")

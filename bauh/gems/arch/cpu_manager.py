@@ -58,7 +58,7 @@ def _change_governor(cpu_idx: int, new_gov_file_path: str, root_password: Option
         replace = new_root_subprocess((shutil.which('cp'), new_gov_file_path, gov_file), root_password=root_password)
         replace.wait()
     except Exception:
-        traceback.print_exc()
+        import logging; logging.error("Exception occurred", exc_info=True)
 
 
 def set_all_cpus_to(governor: str, root_password: Optional[str], logger: Logger) \

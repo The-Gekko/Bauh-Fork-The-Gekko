@@ -179,7 +179,7 @@ class AppImageManager(SoftwareManager, SettingsController):
                 return sqlite3.connect(db_path)
             except Exception:
                 self.logger.error(f"Could not connect to database file '{db_path}'")
-                traceback.print_exc()
+                import logging; logging.error("Exception occurred", exc_info=True)
         else:
             self.logger.warning(f"Could not get a connection for database '{db_path}'")
 
@@ -209,7 +209,7 @@ class AppImageManager(SoftwareManager, SettingsController):
                 idx += 1
         except Exception:
             self.logger.error("An exception happened while querying the 'apps' database")
-            traceback.print_exc()
+            import logging; logging.error("Exception occurred", exc_info=True)
 
         try:
             installed = self.read_installed(connection=apps_conn, disk_loader=disk_loader, limit=limit, only_apps=False, pkg_types=None, internet_available=True).installed
@@ -243,7 +243,7 @@ class AppImageManager(SoftwareManager, SettingsController):
             apps_conn.close()
         except Exception:
             self.logger.error(f"An exception happened when trying to close the connection to database file '{DATABASE_APPS_FILE}'")
-            traceback.print_exc()
+            import logging; logging.error("Exception occurred", exc_info=True)
 
         return SearchResult(new=not_installed, installed=installed_found, total=len(not_installed) + len(installed_found))
 
@@ -293,7 +293,7 @@ class AppImageManager(SoftwareManager, SettingsController):
                                                         app.update = latest_version > installed_version
                                                     except Exception:
                                                         app.update = False
-                                                        traceback.print_exc()
+                                                        import logging; logging.error("Exception occurred", exc_info=True)
 
                                         if app.update:
                                             app.latest_version = tup[2]
@@ -302,7 +302,7 @@ class AppImageManager(SoftwareManager, SettingsController):
                                         break
                         except Exception:
                             self.logger.error(f"An exception happened while querying the database file '{DATABASE_APPS_FILE}'")
-                            traceback.print_exc()
+                            import logging; logging.error("Exception occurred", exc_info=True)
                         finally:
                             if not connection:  # the connection can only be closed if it was opened within this method
                                 apps_con.close()
@@ -508,7 +508,7 @@ class AppImageManager(SoftwareManager, SettingsController):
                 return res
         except Exception:
             self.logger.error(f"An exception happened while querying the database file '{DATABASE_APPS_FILE}'")
-            traceback.print_exc()
+            import logging; logging.error("Exception occurred", exc_info=True)
             app_con.close()
             return res
 
@@ -539,7 +539,7 @@ class AppImageManager(SoftwareManager, SettingsController):
                 return res
         except Exception:
             self.logger.error(f"An exception happened while querying the database file '{DATABASE_RELEASES_FILE}'")
-            traceback.print_exc()
+            import logging; logging.error("Exception occurred", exc_info=True)
         finally:
             releases_con.close()
 
@@ -668,7 +668,7 @@ class AppImageManager(SoftwareManager, SettingsController):
                 watcher.show_message(title=self.i18n['error'],
                                      body=traceback.format_exc(),
                                      type_=MessageType.ERROR)
-                traceback.print_exc()
+                import logging; logging.error("Exception occurred", exc_info=True)
                 handler.handle(SystemProcess(new_subprocess(['rm', '-rf', out_dir])))
                 return TransactionResult.fail()
 
@@ -707,7 +707,7 @@ class AppImageManager(SoftwareManager, SettingsController):
                 try:
                     shutil.rmtree(extracted_folder)
                 except Exception:
-                    traceback.print_exc()
+                    import logging; logging.error("Exception occurred", exc_info=True)
 
                 SymlinksVerifier.create_symlink(app=pkg, file_path=install_file_path, logger=self.logger,
                                                 watcher=watcher)
@@ -826,7 +826,7 @@ class AppImageManager(SoftwareManager, SettingsController):
                     self.logger.info(f"Mapped {len(res)} AppImage suggestions")
                     return res
                 except Exception:
-                    traceback.print_exc()
+                    import logging; logging.error("Exception occurred", exc_info=True)
                 finally:
                     connection.close()
 
@@ -863,7 +863,7 @@ class AppImageManager(SoftwareManager, SettingsController):
             except Exception:
                 if logs:
                     print(f'{Fore.RED}[bauh][appimage] An exception has happened when deleting {f}{Fore.RESET}')
-                    traceback.print_exc()
+                    import logging; logging.error("Exception occurred", exc_info=True)
 
     def get_settings(self) -> Optional[Generator[SettingsView, None, None]]:
         config_ = self.configman.get_config()

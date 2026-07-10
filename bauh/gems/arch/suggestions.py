@@ -93,7 +93,7 @@ class RepositorySuggestionsDownloader(Thread):
             suggestions_timestamp = datetime.fromtimestamp(float(timestamp_str))
         except Exception:
             self._log.error(f'Could not parse the Arch cached suggestions timestamp: {timestamp_str}')
-            traceback.print_exc()
+            import logging; logging.error("Exception occurred", exc_info=True)
             return True
 
         update = suggestions_timestamp + timedelta(hours=exp_hours) <= datetime.utcnow()
@@ -115,7 +115,7 @@ class RepositorySuggestionsDownloader(Thread):
             cache_dir_ok = True
         except OSError:
             self._log.error(f"Could not create cache directory '{cache_dir}'")
-            traceback.print_exc()
+            import logging; logging.error("Exception occurred", exc_info=True)
             cache_dir_ok = False
 
         if cache_dir_ok:
@@ -124,14 +124,14 @@ class RepositorySuggestionsDownloader(Thread):
                     f.write(text)
             except Exception:
                 self._log.error(f"An exception happened while writing the file '{self.file_suggestions()}'")
-                traceback.print_exc()
+                import logging; logging.error("Exception occurred", exc_info=True)
 
             try:
                 with open(self.file_suggestions_timestamp(), 'w+') as f:
                     f.write(str(timestamp))
             except Exception:
                 self._log.error(f"An exception happened while writing the file '{self.file_suggestions_timestamp()}'")
-                traceback.print_exc()
+                import logging; logging.error("Exception occurred", exc_info=True)
 
     def read_cached(self, custom_file: Optional[str] = None) -> Optional[Dict[str, SuggestionPriority]]:
         if custom_file:

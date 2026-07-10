@@ -143,6 +143,13 @@ class SettingsWindow(QWidget):
 
     def _reload_manage_panel(self):
         if self.window and self.window.isVisible():
+            custom_theme_config = self.manager.config.get('custom_theme') or {}
+            opacity = custom_theme_config.get('opacity', 100)
+            self.window.setWindowOpacity(opacity / 100.0)
+            
+            from bauh.context import set_theme
+            set_theme(theme_key=self.manager.config['ui']['theme'], app=QApplication.instance(), logger=self.manager.logger, app_config=self.manager.config)
+            
             self.window.reload()
 
         QApplication.restoreOverrideCursor()

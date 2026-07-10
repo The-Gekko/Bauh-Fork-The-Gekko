@@ -1,0 +1,13 @@
+name=Aurora
+description=Premium modern dark theme with cyan/violet accents
+description[pt]=Tema escuro premium moderno com acentos ciano/violeta
+description[es]=Tema oscuro premium moderno con acentos cian/violeta
+description[de]=Modernes dunkles Premium-Theme mit Cyan/Violett-Akzenten
+description[fr]=Thème sombre premium moderne avec des accents cyan/violet
+description[it]=Tema scuro premium moderno con accenti ciano/viola
+description[ru]=Премиальная современная тёмная тема с голубыми/фиолетовыми акцентами
+description[tr]=Cyan/mor vurgulu premium modern karanlık tema
+description[zh]=高级现代深色主题，带有青色/紫色强调色
+description[ca]=Tema fosc premium modern amb accents cian/violeta
+version=1.0
+root_theme=default

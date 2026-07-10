@@ -72,7 +72,7 @@ class AsyncDiskCacheLoader(Thread, DiskCacheLoader):
         last = 0
 
         while True:
-            time.sleep(0.00001)
+            time.sleep(0.005)
             if len(self.pkgs) > self.processed:
                 pkg = self.pkgs[last]
 

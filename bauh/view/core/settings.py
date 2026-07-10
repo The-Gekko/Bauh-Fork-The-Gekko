@@ -12,7 +12,7 @@ from bauh.api.abstract.context import ApplicationContext
 from bauh.api.abstract.controller import SoftwareManager, SettingsController, SettingsView
 from bauh.api.abstract.view import TabComponent, InputOption, TextComponent, MultipleSelectComponent, \
     PanelComponent, FormComponent, TabGroupComponent, SingleSelectComponent, SelectViewType, TextInputComponent, \
-    FileChooserComponent, RangeInputComponent, ViewComponentAlignment
+    FileChooserComponent, RangeInputComponent, ViewComponentAlignment, ColorPickerComponent
 from bauh.commons.view_utils import new_select
 from bauh.view.core import timeshift
 from bauh.view.core.config import CoreConfigManager, BACKUP_REMOVE_METHODS, BACKUP_DEFAULT_REMOVE_METHOD
@@ -88,6 +88,7 @@ class GenericSettingsManager(SettingsController):
 
         tabs.append(self._gen_general_settings(core_config))
         tabs.append(self._gen_interface_settings(core_config))
+        tabs.append(self._gen_custom_theme_settings(core_config))
         tabs.append(self._gen_tray_settings(core_config))
         tabs.append(self._gen_adv_settings(core_config))
 
@@ -165,6 +166,43 @@ class GenericSettingsManager(SettingsController):
                           id_="mthread_client",
                           opts=mthread_client_opts,
                           value=current_mthread_client)
+
+    def _gen_custom_theme_settings(self, core_config: dict) -> TabComponent:
+        ct_config = core_config.get('custom_theme', {})
+        
+        enabled = self._gen_bool_component(label='Habilitar Personalización',
+                                           tooltip='Si está activo, tus colores sobreescribirán el tema base',
+                                           value=ct_config.get('enabled', False),
+                                           id_='ct_enabled')
+                                           
+        reset_vals = self._gen_bool_component(label='Restablecer Valores por Defecto',
+                                              tooltip='Si seleccionas Sí, al darle a Cambiar se borrará tu personalización',
+                                              value=False,
+                                              id_='ct_reset')
+
+        bg_color = ColorPickerComponent(id_='ct_bg', label='Color de Fondo',
+                                        value=ct_config.get('background_color', '#161B22'),
+                                        tooltip='Color de fondo para el tema personalizado')
+        text_color = ColorPickerComponent(id_='ct_text', label='Color de Texto',
+                                          value=ct_config.get('text_color', '#FFFFFF'),
+                                          tooltip='Color de texto para el tema personalizado')
+        acc_color = ColorPickerComponent(id_='ct_acc', label='Color de Acento',
+                                         value=ct_config.get('accent_color', '#FF4500'),
+                                         tooltip='Color de acento para el tema personalizado')
+        
+        opacity = RangeInputComponent(id_='ct_opacity', label='Opacidad (%)',
+                                      tooltip='Opacidad general de la ventana',
+                                      min_value=10, max_value=100, step_value=1,
+                                      value=int(ct_config.get('opacity', 100)))
+
+        bg_img_path = str(ct_config.get('background_image')) if ct_config.get('background_image') else None
+        bg_img = FileChooserComponent(id_='ct_bg_img', label='Imagen de Fondo',
+                                      tooltip='Imagen de fondo para el tema personalizado',
+                                      file_path=bg_img_path,
+                                      allowed_extensions={'png', 'jpg', 'jpeg'})
+
+        sub_comps = [FormComponent([enabled, bg_color, text_color, acc_color, opacity, bg_img, reset_vals], spaces=False)]
+        return TabComponent('Personalización', PanelComponent(sub_comps, id_='custom_theme'), None, 'core.custom_theme')
 
     def _gen_tray_settings(self, core_config: dict) -> TabComponent:
         input_update_interval = TextInputComponent(label=self.i18n['core.config.updates.interval'].capitalize(),
@@ -347,6 +385,7 @@ class GenericSettingsManager(SettingsController):
                        advanced: PanelComponent,
                        backup: PanelComponent,
                        ui: PanelComponent,
+                       custom_theme: PanelComponent,
                        tray: PanelComponent,
                        gems_panel: PanelComponent) -> Tuple[bool, Optional[List[str]]]:
         core_config = self.configman.get_config()
@@ -469,6 +508,33 @@ class GenericSettingsManager(SettingsController):
 
         core_config['ui']['system_theme'] = ui_form.get_component('system_theme', SingleSelectComponent).get_selected()
 
+        # custom theme
+        if custom_theme:
+            ct_form = custom_theme.get_component_by_idx(0, FormComponent)
+            
+            if 'custom_theme' not in core_config:
+                core_config['custom_theme'] = {}
+                
+            reset_vals = ct_form.get_component('ct_reset', SingleSelectComponent).get_selected()
+            if reset_vals:
+                core_config['custom_theme'] = {
+                    'enabled': False,
+                    'background_color': '#161B22',
+                    'text_color': '#FFFFFF',
+                    'accent_color': '#FF4500',
+                    'opacity': 100,
+                    'background_image': None
+                }
+            else:
+                core_config['custom_theme']['enabled'] = ct_form.get_component('ct_enabled', SingleSelectComponent).get_selected()
+                core_config['custom_theme']['background_color'] = ct_form.get_component('ct_bg', ColorPickerComponent).value
+                core_config['custom_theme']['text_color'] = ct_form.get_component('ct_text', ColorPickerComponent).value
+                core_config['custom_theme']['accent_color'] = ct_form.get_component('ct_acc', ColorPickerComponent).value
+                core_config['custom_theme']['opacity'] = ct_form.get_component('ct_opacity', RangeInputComponent).value
+                
+                bg_img_path = ct_form.get_component('ct_bg_img', FileChooserComponent).file_path
+                core_config['custom_theme']['background_image'] = bg_img_path if bg_img_path else None
+
         # gems
         checked_gems = gems_panel.components[1].get_component('gems', MultipleSelectComponent).get_selected_values()
 
@@ -505,7 +571,7 @@ class GenericSettingsManager(SettingsController):
             except Exception:
                 self.logger.error(f"An exception happened while {view.controller.__class__.__name__}"
                                   f" was trying to save settings")
-                traceback.print_exc()
+                import logging; logging.error("Exception occurred", exc_info=True)
             finally:
                 success_list.append(success)
 
@@ -519,13 +585,14 @@ class GenericSettingsManager(SettingsController):
                                                   tray=tabs.get_tab('core.tray').get_content(PanelComponent),
                                                   backup=bkp.get_content(PanelComponent) if bkp else None,
                                                   ui=tabs.get_tab('core.ui').get_content(PanelComponent),
+                                                  custom_theme=tabs.get_tab('core.custom_theme').get_content(PanelComponent) if tabs.get_tab('core.custom_theme') else None,
                                                   gems_panel=tabs.get_tab('core.types').get_content(PanelComponent))
             if errors:
                 warnings.extend(errors)
 
         except Exception:
             self.logger.error("An exception happened while saving the core settings")
-            traceback.print_exc()
+            import logging; logging.error("Exception occurred", exc_info=True)
         finally:
             success_list.append(success)
 

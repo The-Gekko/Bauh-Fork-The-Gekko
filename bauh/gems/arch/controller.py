@@ -852,7 +852,7 @@ class ArchManager(SoftwareManager, SettingsController):
                         return True
                 except Exception:
                     self.logger.error("An error occurred while removing the pacman database lock")
-                    traceback.print_exc()
+                    import logging; logging.error("Exception occurred", exc_info=True)
                     handler.watcher.show_message(title=self.i18n['error'].capitalize(),
                                                  body=self.i18n['arch.action.db_locked.error'],
                                                  type_=MessageType.ERROR)
@@ -1069,7 +1069,7 @@ class ArchManager(SoftwareManager, SettingsController):
             handler.watcher.change_substatus('')
             handler.watcher.print("An error occurred while upgrading repository packages")
             self.logger.error("An error occurred while upgrading repository packages")
-            traceback.print_exc()
+            import logging; logging.error("Exception occurred", exc_info=True)
             return False
 
     def _remove_transaction_packages(self, to_remove: Set[str], handler: ProcessHandler, root_password: Optional[str]) -> bool:
@@ -1094,7 +1094,7 @@ class ArchManager(SoftwareManager, SettingsController):
             return True
         except Exception:
             self.logger.error("An error occurred while removing packages: {}".format(', '.join(to_remove)))
-            traceback.print_exc()
+            import logging; logging.error("Exception occurred", exc_info=True)
             output_handler.stop_working()
             output_handler.join()
             return False
@@ -1187,7 +1187,7 @@ class ArchManager(SoftwareManager, SettingsController):
                     watcher.print(self.i18n['arch.upgrade.fail'].format('"{}"'.format(pkg.name)))
                     watcher.change_substatus('')
                     self.logger.error("An error occurred when upgrading AUR package '{}'".format(pkg.name))
-                    traceback.print_exc()
+                    import logging; logging.error("Exception occurred", exc_info=True)
                     return False
 
             if any_upgraded:
@@ -1777,7 +1777,7 @@ class ArchManager(SoftwareManager, SettingsController):
             Path(extract_path).mkdir(parents=True, exist_ok=True)
         except Exception:
             self.logger.error("Could not create temp dir {} to extract previous versions data".format(extract_path))
-            traceback.print_exc()
+            import logging; logging.error("Exception occurred", exc_info=True)
             return data
 
         try:
@@ -2194,7 +2194,7 @@ class ArchManager(SoftwareManager, SettingsController):
                 os.mkdir(cache_path)
             except Exception:
                 print("Could not create cache directory '{}'".format(cache_path))
-                traceback.print_exc()
+                import logging; logging.error("Exception occurred", exc_info=True)
                 return
 
         src_pkgbuild = '{}/PKGBUILD'.format(context.project_dir)
@@ -2203,7 +2203,7 @@ class ArchManager(SoftwareManager, SettingsController):
             shutil.copy(src_pkgbuild, dest_pkgbuild)
         except Exception:
             context.watcher.print("Could not copy '{}' to '{}'".format(src_pkgbuild, dest_pkgbuild))
-            traceback.print_exc()
+            import logging; logging.error("Exception occurred", exc_info=True)
 
     def _ask_and_install_missing_deps(self, context: TransactionContext, missing_deps: List[Tuple[str, str]]) -> bool:
         context.watcher.change_substatus(self.i18n['arch.missing_deps_found'].format(bold(context.name)))
@@ -2276,7 +2276,7 @@ class ArchManager(SoftwareManager, SettingsController):
         except PackageNotFoundException:
             return False
         except Exception:
-            traceback.print_exc()
+            import logging; logging.error("Exception occurred", exc_info=True)
             return False
 
         if missing_deps is None:
@@ -2443,7 +2443,7 @@ class ArchManager(SoftwareManager, SettingsController):
                 else:
                     raise ArchDownloadException()
             except Exception:
-                traceback.print_exc()
+                import logging; logging.error("Exception occurred", exc_info=True)
                 raise ArchDownloadException()
 
     def _install(self, context: TransactionContext) -> bool:
@@ -3434,7 +3434,7 @@ class ArchManager(SoftwareManager, SettingsController):
             self._write_editable_pkgbuilds(editable)
             return True
         except Exception:
-            traceback.print_exc()
+            import logging; logging.error("Exception occurred", exc_info=True)
             return False
 
     def _write_editable_pkgbuilds(self, editable: Set[str]):
@@ -3455,7 +3455,7 @@ class ArchManager(SoftwareManager, SettingsController):
 
                 self._write_editable_pkgbuilds(editable)
             except Exception:
-                traceback.print_exc()
+                import logging; logging.error("Exception occurred", exc_info=True)
                 return False
 
         return True
@@ -3699,7 +3699,7 @@ class ArchManager(SoftwareManager, SettingsController):
                 pkg.allow_rebuild = True
         except Exception:
             self.logger.error("An unexpected exception happened")
-            traceback.print_exc()
+            import logging; logging.error("Exception occurred", exc_info=True)
             return False
 
         pkg.update_state()

@@ -76,7 +76,7 @@ class DatabaseUpdater(Thread):
             dbs_timestamp = datetime.fromtimestamp(float(dbs_ts_str))
         except Exception:
             self.logger.error('Could not parse the databases timestamp: {}'.format(dbs_ts_str))
-            traceback.print_exc()
+            import logging; logging.error("Exception occurred", exc_info=True)
             return True
 
         update = dbs_timestamp + timedelta(minutes=db_exp) <= datetime.utcnow()
@@ -130,7 +130,7 @@ class DatabaseUpdater(Thread):
             self.logger.info('Successfully uncompressed file {}'.format(self.COMPRESS_FILE_PATH))
         except Exception:
             self.logger.error('Could not extract file {}'.format(self.COMPRESS_FILE_PATH))
-            traceback.print_exc()
+            import logging; logging.error("Exception occurred", exc_info=True)
             return False
         finally:
             self.logger.info('Deleting {}'.format(self.COMPRESS_FILE_PATH))
@@ -266,7 +266,7 @@ class SymlinksVerifier(Thread):
                                     f.write(json.dumps(data))
                             except Exception:
                                 self.logger.warning("Could not update cached data on '{}'".format(json_file))
-                                traceback.print_exc()
+                                import logging; logging.error("Exception occurred", exc_info=True)
 
                         else:
                             self.logger.warning("No AppImage file found on installation dir '{}'".format(file_path))
@@ -337,7 +337,7 @@ class AppImageSuggestionsDownloader(Thread):
             exp_hours = int(appimage_config['suggestions']['expiration'])
         except Exception:
             self.logger.error("An exception happened while trying to parse the AppImage 'suggestions.expiration'")
-            traceback.print_exc()
+            import logging; logging.error("Exception occurred", exc_info=True)
             return True
 
         if exp_hours <= 0:
@@ -359,7 +359,7 @@ class AppImageSuggestionsDownloader(Thread):
             suggestions_timestamp = datetime.fromtimestamp(float(timestamp_str))
         except Exception:
             self.logger.error(f'Could not parse the cached AppImage suggestions timestamp: {timestamp_str}')
-            traceback.print_exc()
+            import logging; logging.error("Exception occurred", exc_info=True)
             return True
 
         update = suggestions_timestamp + timedelta(hours=exp_hours) <= datetime.utcnow()
@@ -398,7 +398,7 @@ class AppImageSuggestionsDownloader(Thread):
             cache_dir_ok = True
         except OSError:
             self.logger.error(f"Could not create the caching directory {cache_dir}")
-            traceback.print_exc()
+            import logging; logging.error("Exception occurred", exc_info=True)
             cache_dir_ok = False
 
         if cache_dir_ok:
@@ -407,7 +407,7 @@ class AppImageSuggestionsDownloader(Thread):
                     f.write(text)
             except Exception:
                 self.logger.error(f"An exception happened while writing AppImage suggestions to {self.cached_file_path}")
-                traceback.print_exc()
+                import logging; logging.error("Exception occurred", exc_info=True)
 
             try:
                 with open(self.cached_ts_file_path, 'w+') as f:
@@ -415,7 +415,7 @@ class AppImageSuggestionsDownloader(Thread):
             except Exception:
                 self.logger.error(f"An exception happened while writing the cached AppImage suggestions timestamp "
                                   f"to {self.cached_ts_file_path}")
-                traceback.print_exc()
+                import logging; logging.error("Exception occurred", exc_info=True)
 
     def download(self) -> Optional[str]:
         if not self._file_url:
@@ -476,7 +476,7 @@ class AppImageSuggestionsDownloader(Thread):
                     self.logger.info("Cached AppImage suggestions are up-to-date")
             except Exception:
                 self.logger.error("An unexpected exception happened while downloading AppImage suggestions")
-                traceback.print_exc()
+                import logging; logging.error("Exception occurred", exc_info=True)
 
         self.taskman.update_progress(self.task_id, 100, None)
         self.taskman.finish_task(self.task_id)

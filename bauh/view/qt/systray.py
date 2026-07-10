@@ -95,7 +95,7 @@ class UpdateCheck(QThread):
                     try:
                         os.remove(TRAY_CHECK_FILE)
                     except Exception:
-                        traceback.print_exc()
+                        import logging; logging.error("Exception occurred", exc_info=True)
                 else:
                     self.sleep(self.check_interval)
             else:

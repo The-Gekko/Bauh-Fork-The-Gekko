@@ -91,7 +91,7 @@ class FlatpakAsyncDataLoader(Thread):
                     self.logger.warning("Could not retrieve app data for id '{}'. Server response: {}. Body: {}".format(self.app.id, res.status_code if res else '?', res.content.decode() if res else '?'))
             except Exception:
                 self.logger.error("Could not retrieve app data for id '{}'".format(self.app.id))
-                traceback.print_exc()
+                import logging; logging.error("Exception occurred", exc_info=True)
 
             self.app.status = PackageStatus.READY
 

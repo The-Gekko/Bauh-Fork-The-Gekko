@@ -130,7 +130,7 @@ def read_all_themes_metadata() -> Set[ThemeMetadata]:
 
 
 def process_theme(file_path: str, theme_str: str, metadata: ThemeMetadata,
-                  available_themes: Optional[Dict[str, str]]) -> Optional[Tuple[str, ThemeMetadata]]:
+                  available_themes: Optional[Dict[str, str]], app_config: dict = None) -> Optional[Tuple[str, ThemeMetadata]]:
     if theme_str and metadata:
         root_theme = None
         if metadata.root_theme and metadata.root_theme in available_themes:
@@ -145,7 +145,8 @@ def process_theme(file_path: str, theme_str: str, metadata: ThemeMetadata,
                     root_theme = process_theme(file_path=root_file,
                                                theme_str=root_theme_str,
                                                metadata=root_metadata,
-                                               available_themes=available_themes)
+                                               available_themes=available_themes,
+                                               app_config=app_config)
 
         var_map = _read_var_file(file_path)
         var_map['images'] = resource.get_path('img')
@@ -158,10 +159,45 @@ def process_theme(file_path: str, theme_str: str, metadata: ThemeMetadata,
             for var in var_list:
                 theme_str = theme_str.replace('@' + var, var_map[var])
 
-        # TODO percentage measures disabled for the moment (requires more testing)
-        # screen_size = QApplication.primaryScreen().size()
-        # theme_str = process_width_percent_measures(theme_str, screen_size.width())
-        # theme_str = process_height_percent_measures(theme_str, screen_size.height())
+        if app_config:
+            custom_theme = app_config.get('custom_theme') or {}
+            
+            if custom_theme.get('enabled', False):
+                bg_color = custom_theme.get('background_color')
+                text_color = custom_theme.get('text_color')
+                accent_color = custom_theme.get('accent_color')
+                bg_image = custom_theme.get('background_image')
+    
+                custom_css = "\n/* Custom Theme Overrides */\n"
+                if bg_color or text_color:
+                    custom_css += "QWidget { "
+                    if bg_color:
+                        custom_css += f"background-color: {bg_color}; "
+                    if text_color:
+                        custom_css += f"color: {text_color}; "
+                    custom_css += "}\n"
+                    
+                    custom_css += "QMenuBar, QMenu { "
+                    if bg_color:
+                        custom_css += f"background-color: {bg_color}; "
+                    if text_color:
+                        custom_css += f"color: {text_color}; "
+                    custom_css += "}\n"
+                    
+                    custom_css += f"QToolTip {{ background-color: {bg_color or '#000'}; color: {text_color or '#fff'}; border: 1px solid {accent_color or '#555'}; }}\n"
+                    
+                if bg_image and os.path.exists(bg_image):
+                    custom_css += f"QWidget#manage_window {{ background-image: url({bg_image}); background-position: center; background-repeat: no-repeat; }}\n"
+    
+                if accent_color:
+                    custom_css += f"QPushButton:hover {{ border-color: {accent_color}; }}\n"
+                    custom_css += f"QProgressBar::chunk {{ background-color: {accent_color}; }}\n"
+                    custom_css += f"QTabBar::tab:selected {{ border-bottom: 2px solid {accent_color}; color: {accent_color}; }}\n"
+                    custom_css += f"QCheckBox::indicator:checked {{ background-color: {accent_color}; border-color: {accent_color}; }}\n"
+                    custom_css += f"QRadioButton::indicator:checked {{ background-color: {accent_color}; border-color: {accent_color}; }}\n"
+                    custom_css += f"QSlider::handle:horizontal {{ background-color: {accent_color}; }}\n"
+                    
+                theme_str += custom_css
 
         return theme_str if not root_theme else '{}\n{}'.format(root_theme[0], theme_str), metadata
 
@@ -238,7 +274,7 @@ def process_var_of_vars(var_map: dict):
 #                 percent = float(m.split('%')[0])
 #                 final_theme = final_theme.replace(m, '{}px'.format(round(screen_width * percent)))
 #             except ValueError:
-#                 traceback.print_exc()
+#                 import logging; logging.error("Exception occurred", exc_info=True)
 #
 #     return final_theme
 
@@ -253,6 +289,6 @@ def process_var_of_vars(var_map: dict):
 #                 percent = float(m.split('%')[0])
 #                 final_sheet = final_sheet.replace(m, '{}px'.format(round(screen_height * percent)))
 #             except ValueError:
-#                 traceback.print_exc()
+#                 import logging; logging.error("Exception occurred", exc_info=True)
 #
 #     return final_sheet

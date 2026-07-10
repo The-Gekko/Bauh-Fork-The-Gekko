@@ -92,11 +92,11 @@ class YAMLConfigManager(ConfigManager, ABC):
             try:
                 Path(config_dir).mkdir(parents=True, exist_ok=True)
             except OSError:
-                traceback.print_exc()
+                import logging; logging.error("Exception occurred", exc_info=True)
                 return
 
             try:
                 with open(self.file_path, 'w+') as f:
                     f.write(yaml.dump(config_obj))
             except Exception:
-                traceback.print_exc()
+                import logging; logging.error("Exception occurred", exc_info=True)

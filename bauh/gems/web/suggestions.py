@@ -107,7 +107,7 @@ class SuggestionsManager:
             return yaml.safe_load(sugs_str)
         except Exception:
             self.logger.error("An unexpected exception happened")
-            traceback.print_exc()
+            import logging; logging.error("Exception occurred", exc_info=True)
             return {}
 
     def download(self) -> dict:
@@ -141,7 +141,7 @@ class SuggestionsManager:
             Path(suggestions_file_dir).mkdir(parents=True, exist_ok=True)
         except OSError:
             self.logger.error(f"Could not generate the directory {suggestions_file_dir}")
-            traceback.print_exc()
+            import logging; logging.error("Exception occurred", exc_info=True)
             return
 
         try:
@@ -149,7 +149,7 @@ class SuggestionsManager:
                 f.write(yaml.safe_dump(suggestions))
         except Exception:
             self.logger.error(f"Could write to {self._cached_file_path}")
-            traceback.print_exc()
+            import logging; logging.error("Exception occurred", exc_info=True)
             return
 
         self.logger.info(f"{len(suggestions)} suggestions successfully cached to file '{self._cached_file_path}'")
@@ -159,7 +159,7 @@ class SuggestionsManager:
                 f.write(str(timestamp))
         except Exception:
             self.logger.error(f"Could not write to {self._cached_file_ts_path}")
-            traceback.print_exc()
+            import logging; logging.error("Exception occurred", exc_info=True)
             return
 
         self.logger.info(f"Suggestions cached file timestamp ({timestamp}) "

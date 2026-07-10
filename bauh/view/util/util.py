@@ -78,7 +78,7 @@ def clean_app_files(managers: List[SoftwareManager], logs: bool = True):
             except Exception:
                 if logs:
                     print('{}[bauh] An exception has happened when deleting {}{}'.format(Fore.RED, path, Fore.RESET))
-                    traceback.print_exc()
+                    import logging; logging.error("Exception occurred", exc_info=True)
 
     if managers:
         for m in managers:

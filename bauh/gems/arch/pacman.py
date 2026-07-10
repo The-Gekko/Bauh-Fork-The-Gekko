@@ -252,7 +252,7 @@ def list_ignored_packages(config_path: str = '/etc/pacman.conf') -> Set[str]:
     except (FileNotFoundError, OSError):
         pass
     except Exception:
-        traceback.print_exc()
+        import logging; logging.error("Exception occurred", exc_info=True)
 
     return ignored
 

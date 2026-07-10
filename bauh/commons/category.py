@@ -87,7 +87,7 @@ class CategoriesDownloader(Thread):
             self.logger.info(self._msg("Categories timestamp ({}) cached to file '{}'".format(timestamp, categories_ts_path)))
         except Exception:
             self.logger.error(self._msg("Could not cache categories to the disk as '{}'".format(self.categories_path)))
-            traceback.print_exc()
+            import logging; logging.error("Exception occurred", exc_info=True)
 
     def download_categories(self) -> Dict[str, List[str]]:
         self.logger.info(self._msg('Downloading category definitions from {}'.format(self.url_categories_file)))
@@ -108,7 +108,7 @@ class CategoriesDownloader(Thread):
             self.logger.info(self._msg('Loaded categories for {} applications'.format(len(categories))))
         except Exception:
             self.logger.error(self._msg("Could not parse categories definitions"))
-            traceback.print_exc()
+            import logging; logging.error("Exception occurred", exc_info=True)
             return {}
 
         if categories:
@@ -142,7 +142,7 @@ class CategoriesDownloader(Thread):
             categories_timestamp = datetime.fromtimestamp(float(timestamp_str))
         except Exception:
             self.logger.error(self._msg("An exception occurred when trying to parse the categories file timestamp from '{}'. The categories file should be re-downloaded.".format(categories_ts_path)))
-            traceback.print_exc()
+            import logging; logging.error("Exception occurred", exc_info=True)
             return True
 
         should_download = (categories_timestamp + timedelta(hours=self.expiration) <= datetime.utcnow())

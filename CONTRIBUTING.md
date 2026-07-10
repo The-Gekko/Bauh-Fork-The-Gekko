@@ -1,28 +1,29 @@
-# How can I contribute?
-Well, you can...
-* Report bugs
-* Add improvements
-* Fix bugs
-* Add new translations or fix the current ones
+# ¿Cómo puedo contribuir?
+Bueno, puedes...
+* Reportar errores (bugs)
+* Proponer mejoras
+* Corregir errores
+* Añadir nuevas traducciones o corregir las existentes
 
-# Reporting bugs
-The best means of reporting bugs is by following these basic guidelines:
+# Reportar errores
+El mejor medio para reportar errores es siguiendo estas pautas básicas:
 
-* First describe in the title of the issue tracker what's gone wrong.
-* In the body, explain a basic synopsis of what exactly happens, explain how you got the bug one step at a time. If you're including script output, make sure you run the script with the verbose flag `-v`.
-* Explain what you had expected to occur, and what really occurred.
-* Optionally, if you want, if you're a programmer, you can try to issue a pull request yourself that fixes the issue.
+* Primero describe en el título del reporte de problemas (issue tracker) qué es lo que ha fallado.
+* En el cuerpo, explica un resumen básico de lo que ocurre exactamente, detallando cómo llegaste al error paso a paso. Si incluyes la salida de algún script, asegúrate de ejecutar el script con la bandera de depuración detallada `-v`.
+* Explica qué esperabas que ocurriera y qué ocurrió realmente.
+* Opcionalmente, si eres programador, puedes intentar enviar un pull request tú mismo para solucionar el problema.
 
-# Adding improvements
-The way to go here is to ask yourself if the improvement would be useful for more than just a singular person, if it's for a certain use case then sure!
+# Proponer mejoras
+El camino a seguir aquí es preguntarte si la mejora sería útil para más de una sola persona; si es apta para un caso de uso común, ¡adelante!
 
-* In any pull request, explain thoroughly what changes you made
-* Explain why you think these changes could be useful
-* If it fixes a bug, be sure to link to the issue itself.
-* Follow the [PEP 8](https://www.python.org/dev/peps/pep-0008/) code style to keep the code consistent.
+* En cualquier pull request, explica detalladamente qué cambios realizaste.
+* Explica por qué crees que estos cambios podrían ser útiles.
+* Si corrige un error, asegúrate de enlazarlo con el reporte de error (issue) correspondiente.
+* Sigue el estilo de código [PEP 8](https://www.python.org/dev/peps/pep-0008/) para mantener la coherencia del código.
+* **Configuración del Entorno:** Utilizamos `pyproject.toml` (PEP 517/518). Asegúrate de tener Python >= 3.8 y realiza pruebas locales usando `pipx install -e .` o un entorno virtual dedicado antes de enviar tus cambios.
 
-# Adding a new translation
-* To add a new translation, you will have to create a file in each directory listed below named as the first two letters of the language in the ISO format (e.g: for 'english' would be 'en'):
+# Añadir una nueva traducción
+* Para añadir una nueva traducción, tendrás que crear un archivo en cada uno de los directorios listados a continuación con el nombre correspondiente a las dos primeras letras del idioma en formato ISO (por ejemplo: para 'español' sería 'es', para 'inglés' sería 'en'):
 - `bauh/view/resources/locale`
 - `bauh/gems/appimage/resources/locale`
 - `bauh/gems/arch/resources/locale`

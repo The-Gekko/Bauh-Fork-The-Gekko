@@ -898,7 +898,7 @@ class UpdatesSummarizer:
                                 except:
                                     self.logger.error(f"Error when comparing versions {v} (provided) and "
                                                       f"{dep_split[1]} (required)")
-                                    traceback.print_exc()
+                                    import logging; logging.error("Exception occurred", exc_info=True)
 
                             if not version_match:
                                 for pname in real_providers:

@@ -60,7 +60,9 @@ class Prepare(QThread, TaskManager):
             ok, root_pwd = self.ask_password()
 
             if not ok:
-                QCoreApplication.exit(1)
+                from PyQt5.QtCore import QMetaObject, Qt, QCoreApplication
+                QMetaObject.invokeMethod(QCoreApplication.instance(), "quit", Qt.QueuedConnection)
+                return
 
         self.manager.prepare(self, root_pwd, None)
         self.signal_started.emit(len(self._tasks_added))

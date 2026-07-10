@@ -30,7 +30,7 @@ class ValidatePassword(QThread):
             try:
                 valid = validate_password(self.password)
             except Exception:
-                traceback.print_exc()
+                import logging; logging.error("Exception occurred", exc_info=True)
                 valid = False
 
             self.signal_valid.emit(valid)

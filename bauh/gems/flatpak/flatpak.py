@@ -80,7 +80,7 @@ def get_app_info(app_id: str, branch: str, installation: str) -> Optional[str]:
     try:
         return run_cmd(f'flatpak info {app_id} {branch} --{installation}')
     except Exception:
-        traceback.print_exc()
+        import logging; logging.error("Exception occurred", exc_info=True)
         return ''
 
 
@@ -235,7 +235,7 @@ def fill_updates(version: Tuple[str, ...], installation: str, res: Dict[str, Set
                     if not line.startswith('Is this ok'):
                         res['full'].add('{}/{}'.format(installation, line.split('\t')[0].strip()))
         except Exception:
-            traceback.print_exc()
+            import logging; logging.error("Exception occurred", exc_info=True)
     else:
         updates = new_subprocess(('flatpak', 'update', f'--{installation}', '--no-deps')).stdout
 
@@ -270,7 +270,7 @@ def fill_updates(version: Tuple[str, ...], installation: str, res: Dict[str, Set
                         else:
                             res['full'].add(update_id)
         except Exception:
-            traceback.print_exc()
+            import logging; logging.error("Exception occurred", exc_info=True)
 
 
 def downgrade(app_ref: str, commit: str, installation: str, root_password: Optional[str], version: Tuple[str, ...]) -> SimpleProcess:
@@ -479,10 +479,10 @@ def map_update_download_size(app_ids: Iterable[str], installation: str, version:
                                         try:
                                             res[related_id[0].strip()] = size_to_byte(size[0], size[1].strip())
                                         except Exception:
-                                            traceback.print_exc()
+                                            import logging; logging.error("Exception occurred", exc_info=True)
                                 else:
                                     try:
                                         res[related_id[0].strip()] = size_to_byte(size_tuple[0], size_tuple[1].strip())
                                     except Exception:
-                                        traceback.print_exc()
+                                        import logging; logging.error("Exception occurred", exc_info=True)
         return res

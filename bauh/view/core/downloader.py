@@ -81,7 +81,7 @@ class SelfFileDownloader(FileDownloader):
                 watcher.change_substatus(f"{perc}{base_msg} ({get_human_size_str(total_downloaded)} / {total_size_str})")
         except Exception:
             self._logger.error(f"Unexpected exception while downloading file from '{file_url}'")
-            traceback.print_exc()
+            import logging; logging.error("Exception occurred", exc_info=True)
             return False
 
         self._logger.info(f"Writing downloaded file content to disk: {output_path}")
@@ -91,7 +91,7 @@ class SelfFileDownloader(FileDownloader):
                 f.write(byte_stream.getvalue())
         except Exception:
             self._logger.error(f"Unexpected exception when saving downloaded content to disk: {output_path}")
-            traceback.print_exc()
+            import logging; logging.error("Exception occurred", exc_info=True)
             return False
 
         return True
@@ -274,7 +274,7 @@ class AdaptableFileDownloader(FileDownloader):
                                                          display_file_size=display_file_size, max_threads=max_threads,
                                                          known_size=known_size)
         except Exception:
-            traceback.print_exc()
+            import logging; logging.error("Exception occurred", exc_info=True)
             self._rm_bad_file(file_name, output_path, final_cwd, handler, root_password)
 
         final_time = time.time()

@@ -153,7 +153,7 @@ class ScreenshotsDialog(QDialog):
 
     def _handle_download_exception(self, idx: int, url: str):
         self.logger.error(f"Unexpected exception while downloading screenshot from '{url}'")
-        traceback.print_exc()
+        import logging; logging.error("Exception occurred", exc_info=True)
         self.loaded_imgs.append(self.i18n["screenshots.download.no_response"])
         self._load_img(idx)
 

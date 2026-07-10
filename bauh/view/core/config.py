@@ -45,7 +45,14 @@ class CoreConfigManager(YAMLConfigManager):
                 "auto_scale": False,
                 "scale_factor": 1.0,
                 'theme': 'light',
-                'system_theme': False
+                'system_theme': False,
+                'custom_theme': {
+                    'background_color': '#161B22',
+                    'text_color': '#FFFFFF',
+                    'accent_color': '#FF4500',
+                    'opacity': 100,
+                    'background_image': None
+                }
 
             },
             'download': {

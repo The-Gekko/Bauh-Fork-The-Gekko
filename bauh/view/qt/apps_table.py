@@ -70,7 +70,7 @@ class UpgradeToggleButton(QToolButton):
 
 class PackagesTable(QTableWidget):
     COL_NUMBER = 9
-    DEFAULT_ICON_SIZE = QSize(16, 16)
+    DEFAULT_ICON_SIZE = QSize(28, 28)
 
     def __init__(self, parent: QWidget, icon_cache: MemoryCache, download_icons: bool, logger: Logger):
         super(PackagesTable, self).__init__()
@@ -261,6 +261,7 @@ class PackagesTable(QTableWidget):
         self.setEnabled(True)
 
         if pkgs:
+            self.setUpdatesEnabled(False)
             screen_width = get_current_screen_geometry(self.parent()).width()
             self.setColumnCount(self.COL_NUMBER if update_check_enabled else self.COL_NUMBER - 1)
             self.setRowCount(len(pkgs))
@@ -281,6 +282,7 @@ class PackagesTable(QTableWidget):
                 self._update_row(pkg, screen_width, update_check_enabled)
 
             self.scrollToTop()
+            self.setUpdatesEnabled(True)
 
     def _update_row(self, pkg: PackageView, screen_width: int,
                     update_check_enabled: bool = True, change_update_col: bool = True):
@@ -453,6 +455,9 @@ class PackagesTable(QTableWidget):
         col_name = QLabel()
         col_name.setObjectName('app_name')
         col_name.setSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.Preferred)
+        col_name.setProperty('installed', 'true' if pkg.model.installed else 'false')
+        if pkg.model.is_trustable():
+            col_name.setProperty('verified', 'true')
 
         name = pkg.model.get_display_name().strip()
         if name:
@@ -474,8 +479,7 @@ class PackagesTable(QTableWidget):
         label.setPixmap(icon.pixmap(self._get_icon_size(icon)))
 
     def _get_icon_size(self, icon: QIcon) -> QSize:
-        sizes = icon.availableSizes()
-        return sizes[-1] if sizes else self.DEFAULT_ICON_SIZE
+        return self.DEFAULT_ICON_SIZE
 
     def _set_col_description(self, col: int, pkg: PackageView, screen_width: int):
         item = QLabel()

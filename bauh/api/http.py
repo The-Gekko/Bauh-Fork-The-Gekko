@@ -63,7 +63,7 @@ class HttpClient:
                     raise e
 
                 self.logger.error(f"Could not retrieve data from '{url}'")
-                traceback.print_exc()
+                import logging; logging.error("Exception occurred", exc_info=True)
                 continue
 
             self.logger.warning(f"Could not retrieve data from '{url}'")

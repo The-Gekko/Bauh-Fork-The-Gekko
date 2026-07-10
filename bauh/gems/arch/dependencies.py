@@ -291,7 +291,7 @@ class DependenciesAnalyser:
                         except Exception:
                             self._log.warning(f"Could not compare AUR package '{pkgname}' version '{pkgdata['v']}' "
                                               f"with the dependency expression '{dep_exp}'")
-                            traceback.print_exc()
+                            import logging; logging.error("Exception occurred", exc_info=True)
 
     def _fill_missing_dep(self, dep_name: str, dep_exp: str, aur_index: Iterable[str],
                           missing_deps: Set[Tuple[str, str]],

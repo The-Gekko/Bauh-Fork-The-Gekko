@@ -30,10 +30,30 @@ def new_qt_application(app_config: dict, logger: Logger, quit_on_last_closed: bo
     app.setProperty('qt_style', app.style().objectName().lower())
 
     theme_key = app_config['ui']['theme'].strip() if app_config['ui']['theme'] else None
-    set_theme(theme_key=theme_key, app=app, logger=logger)
+    set_theme(theme_key=theme_key, app=app, logger=logger, app_config=app_config)
 
     if not app_config['ui']['system_theme']:
-        app.setPalette(app.style().standardPalette())
+        theme_key = (app_config['ui']['theme'] or '').strip()
+        if theme_key in ('aurora', 'dracula', 'night', 'dark'):
+            from PyQt5.QtGui import QPalette, QColor
+            from PyQt5.QtCore import Qt
+            dark_palette = QPalette()
+            dark_palette.setColor(QPalette.Window, QColor(22, 27, 34))
+            dark_palette.setColor(QPalette.WindowText, Qt.white)
+            dark_palette.setColor(QPalette.Base, QColor(13, 17, 23))
+            dark_palette.setColor(QPalette.AlternateBase, QColor(22, 27, 34))
+            dark_palette.setColor(QPalette.ToolTipBase, Qt.white)
+            dark_palette.setColor(QPalette.ToolTipText, Qt.white)
+            dark_palette.setColor(QPalette.Text, Qt.white)
+            dark_palette.setColor(QPalette.Button, QColor(22, 27, 34))
+            dark_palette.setColor(QPalette.ButtonText, Qt.white)
+            dark_palette.setColor(QPalette.BrightText, Qt.red)
+            dark_palette.setColor(QPalette.Link, QColor(42, 130, 218))
+            dark_palette.setColor(QPalette.Highlight, QColor(42, 130, 218))
+            dark_palette.setColor(QPalette.HighlightedText, Qt.black)
+            app.setPalette(dark_palette)
+        else:
+            app.setPalette(app.style().standardPalette())
 
     return app
 
@@ -58,7 +78,7 @@ def update_i18n(app_config, locale_dir: str, i18n: I18n) -> I18n:
     return i18n
 
 
-def set_theme(theme_key: str, app: QCoreApplication, logger: Logger):
+def set_theme(theme_key: str, app: QCoreApplication, logger: Logger, app_config: dict = None):
     if not theme_key:
         logger.warning("config: no theme defined")
     else:
@@ -95,7 +115,8 @@ def set_theme(theme_key: str, app: QCoreApplication, logger: Logger):
                     processed = process_theme(file_path=theme_file,
                                               metadata=base_metadata,
                                               theme_str=theme_str,
-                                              available_themes=available_themes)
+                                              available_themes=available_themes,
+                                              app_config=app_config)
 
                     if processed:
                         app.setStyleSheet(processed[0])

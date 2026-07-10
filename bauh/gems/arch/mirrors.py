@@ -28,7 +28,7 @@ def should_sync(logger: logging.Logger):
                 return False
         except Exception:
             logger.warning("Could not convert the database synchronization time from '{}".format(SYNC_FILE))
-            traceback.print_exc()
+            import logging; logging.error("Exception occurred", exc_info=True)
     return True
 
 
@@ -39,4 +39,4 @@ def register_sync(logger: Logger):
             f.write(str(int(time.time())))
     except Exception:
         logger.error("Could not write to mirrors sync file '{}'".format(SYNC_FILE))
-        traceback.print_exc()
+        import logging; logging.error("Exception occurred", exc_info=True)

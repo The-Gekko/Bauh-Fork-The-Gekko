@@ -420,7 +420,7 @@ class WebApplicationManager(SoftwareManager, SettingsController):
             watcher.show_message(title=self.i18n['error'],
                                  body=self.i18n['web.uninstall.error.remove'].format(bold(pkg.installation_dir)),
                                  type_=MessageType.ERROR)
-            traceback.print_exc()
+            import logging; logging.error("Exception occurred", exc_info=True)
             return TransactionResult.fail()
 
         self.logger.info("Checking if {} desktop entry file {} exists".format(pkg.name, pkg.desktop_entry))
@@ -431,7 +431,7 @@ class WebApplicationManager(SoftwareManager, SettingsController):
                 watcher.show_message(title=self.i18n['error'],
                                      body=self.i18n['web.uninstall.error.remove'].format(bold(pkg.desktop_entry)),
                                      type_=MessageType.ERROR)
-                traceback.print_exc()
+                import logging; logging.error("Exception occurred", exc_info=True)
 
         autostart_path = pkg.get_autostart_path()
         if os.path.exists(autostart_path):
@@ -441,7 +441,7 @@ class WebApplicationManager(SoftwareManager, SettingsController):
                 watcher.show_message(title=self.i18n['error'],
                                      body=self.i18n['web.uninstall.error.remove'].format(bold(autostart_path)),
                                      type_=MessageType.WARNING)
-                traceback.print_exc()
+                import logging; logging.error("Exception occurred", exc_info=True)
 
         config_path = pkg.get_config_dir()
 
@@ -452,7 +452,7 @@ class WebApplicationManager(SoftwareManager, SettingsController):
                 watcher.show_message(title=self.i18n['error'],
                                      body=self.i18n['web.uninstall.error.remove'].format(bold(config_path)),
                                      type_=MessageType.WARNING)
-                traceback.print_exc()
+                import logging; logging.error("Exception occurred", exc_info=True)
 
         self.logger.info(f"Checking for Javascript fix file associated with {pkg.name}")
         fix_path = FIX_FILE_PATH.format(app_id=pkg.id, electron_branch=self._map_electron_branch(pkg.version))
@@ -463,7 +463,7 @@ class WebApplicationManager(SoftwareManager, SettingsController):
                 os.remove(fix_path)
             except Exception:
                 self.logger.error(f"Could not remove fix file '{fix_path}'")
-                traceback.print_exc()
+                import logging; logging.error("Exception occurred", exc_info=True)
                 watcher.show_message(title=self.i18n['error'],
                                      body=self.i18n['web.uninstall.error.remove'].format(bold(fix_path)),
                                      type_=MessageType.WARNING)
@@ -714,7 +714,7 @@ class WebApplicationManager(SoftwareManager, SettingsController):
                         return icon_path, res.content
                 except Exception:
                     self.logger.error("An exception has happened when downloading {}".format(pkg.icon_url))
-                    traceback.print_exc()
+                    import logging; logging.error("Exception occurred", exc_info=True)
             else:
                 self.logger.warning(
                     'Could no retrieve the icon {} defined for the suggestion {}'.format(pkg.icon_url, pkg.name))
@@ -722,7 +722,7 @@ class WebApplicationManager(SoftwareManager, SettingsController):
             self.logger.warning(
                 'An exception happened when trying to retrieve the icon {} for the suggestion {}'.format(pkg.icon_url,
                                                                                                          pkg.name))
-            traceback.print_exc()
+            import logging; logging.error("Exception occurred", exc_info=True)
 
     def _install(self, pkg: WebApplication, install_options: List[str], watcher: ProcessWatcher) -> TransactionResult:
         widevine_support = '--widevine' in install_options
@@ -873,7 +873,7 @@ class WebApplicationManager(SoftwareManager, SettingsController):
                 pkg.package_name = package_info_path['name']
         except Exception:
             self.logger.info("Could not read the the package info from '{}'".format(package_info_path))
-            traceback.print_exc()
+            import logging; logging.error("Exception occurred", exc_info=True)
 
         desktop_entry_path = self._gen_desktop_entry_path(app_id)
 
@@ -1159,7 +1159,7 @@ class WebApplicationManager(SoftwareManager, SettingsController):
                 if logs:
                     print('{}[bauh][web] An exception has happened when deleting {}{}'.format(Fore.RED, ENV_PATH,
                                                                                               Fore.RESET))
-                    traceback.print_exc()
+                    import logging; logging.error("Exception occurred", exc_info=True)
 
     def get_settings(self) -> Optional[Generator[SettingsView, None, None]]:
         web_config = self.configman.get_config()

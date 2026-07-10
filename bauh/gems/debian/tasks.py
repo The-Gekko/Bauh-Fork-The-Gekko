@@ -153,7 +153,7 @@ class SynchronizePackages(Thread):
         except Exception:
             logger.error(f'Could not parse the packages synchronization timestamp: {timestamp_str} '
                          f'({PACKAGE_SYNC_TIMESTAMP_FILE})')
-            traceback.print_exc()
+            import logging; logging.error("Exception occurred", exc_info=True)
             return True
 
         expired = last_timestamp + timedelta(minutes=period) <= datetime.utcnow()

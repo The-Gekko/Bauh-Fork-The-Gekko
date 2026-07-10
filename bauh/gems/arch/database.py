@@ -33,7 +33,7 @@ def should_sync(arch_config: dict, aur_supported: bool, handler: Optional[Proces
                     return False
             except Exception:
                 logger.warning("Could not convert the database synchronization time from '{}".format(SYNC_FILE))
-                traceback.print_exc()
+                import logging; logging.error("Exception occurred", exc_info=True)
         return True
     else:
         msg = "Package databases synchronization disabled"
@@ -50,4 +50,4 @@ def register_sync(logger: Logger):
             f.write(str(int(time.time())))
     except Exception:
         logger.error("Could not write to database sync file '{}'".format(SYNC_FILE))
-        traceback.print_exc()
+        import logging; logging.error("Exception occurred", exc_info=True)

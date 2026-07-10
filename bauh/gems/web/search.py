@@ -62,6 +62,6 @@ class SearchIndexManager:
                 return True
             except Exception:
                 self.logger.error("Could not write the search index to {}".format(SEARCH_INDEX_FILE))
-                traceback.print_exc()
+                import logging; logging.error("Exception occurred", exc_info=True)
 
         return False

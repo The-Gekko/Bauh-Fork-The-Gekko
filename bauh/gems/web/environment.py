@@ -70,14 +70,14 @@ class EnvironmentUpdater:
                         shutil.rmtree(NODE_DIR_PATH)
                     except Exception:
                         self.logger.error(f"Could not delete old NodeJS version dir -> {NODE_DIR_PATH}")
-                        traceback.print_exc()
+                        import logging; logging.error("Exception occurred", exc_info=True)
                         return False
 
                 try:
                     os.rename(extracted_file, NODE_DIR_PATH)
                 except Exception:
                     self.logger.error(f"Could not rename the NodeJS version file {extracted_file} as {NODE_DIR_PATH}")
-                    traceback.print_exc()
+                    import logging; logging.error("Exception occurred", exc_info=True)
                     return False
 
                 if os.path.exists(NODE_MODULES_PATH):
@@ -91,7 +91,7 @@ class EnvironmentUpdater:
                 return True
             except Exception:
                 self.logger.error(f'Could not extract {tarf_path}')
-                traceback.print_exc()
+                import logging; logging.error("Exception occurred", exc_info=True)
                 return False
             finally:
                 if os.path.exists(tarf_path):

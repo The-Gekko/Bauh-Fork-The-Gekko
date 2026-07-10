@@ -55,7 +55,7 @@ class AURIndexUpdater(Thread):
         try:
             exp_hours = int(self.config['aur_idx_exp'])
         except Exception:
-            traceback.print_exc()
+            import logging; logging.error("Exception occurred", exc_info=True)
             return True
 
         if exp_hours <= 0:
@@ -74,7 +74,7 @@ class AURIndexUpdater(Thread):
             index_timestamp = datetime.fromtimestamp(float(timestamp_str))
             return (index_timestamp + timedelta(hours=exp_hours)) <= datetime.utcnow()
         except Exception:
-            traceback.print_exc()
+            import logging; logging.error("Exception occurred", exc_info=True)
             return True
 
     def update_index(self):
@@ -392,7 +392,7 @@ class ArchCompilationOptimizer(Thread):
                     self.optimize()
                 except Exception:
                     self.logger.error("Unexpected exception")
-                    traceback.print_exc()
+                    import logging; logging.error("Exception occurred", exc_info=True)
                     self.taskman.update_progress(self.task_id, 100, None)
             else:
                 self.logger.info("AUR packages compilation optimizations are disabled")
@@ -403,7 +403,7 @@ class ArchCompilationOptimizer(Thread):
                         os.remove(CUSTOM_MAKEPKG_FILE)
                     except Exception:
                         self.logger.error("Unexpected exception")
-                        traceback.print_exc()
+                        import logging; logging.error("Exception occurred", exc_info=True)
 
                 self.taskman.update_progress(self.task_id, 100, self.i18n['arch.task.disabled'])
 
@@ -475,7 +475,7 @@ class RefreshMirrors(Thread):
                         handler.handle_simple(pacman.sort_fastest_mirrors(self.root_password, sort_limit), output_handler=self._notify_output)
                     except Exception:
                         self.logger.error("Could not sort mirrors by speed")
-                        traceback.print_exc()
+                        import logging; logging.error("Exception occurred", exc_info=True)
 
                 mirrors.register_sync(self.logger)
                 self.refreshed = True
@@ -483,7 +483,7 @@ class RefreshMirrors(Thread):
                 self.logger.error("It was not possible to refresh mirrors")
         except Exception:
             self.logger.error("It was not possible to refresh mirrors")
-            traceback.print_exc()
+            import logging; logging.error("Exception occurred", exc_info=True)
 
         self.taskman.update_progress(self.task_id, 100, None)
         self.taskman.finish_task(self.task_id)
@@ -587,7 +587,7 @@ class SyncDatabases(Thread):
 
             except Exception:
                 self.logger.info("Error while synchronizing databases")
-                traceback.print_exc()
+                import logging; logging.error("Exception occurred", exc_info=True)
 
         self.taskman.update_progress(self.task_id, 100, None)
         self.taskman.finish_task(self.task_id)

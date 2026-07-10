@@ -1,0 +1,822 @@
+/* ═══════════════════════════════════════════════════════════════════════
+   Aurora Theme — Premium Modern Dark
+   A sophisticated dark theme with cyan/violet accents,
+   smooth gradients, and refined visual hierarchy.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* ── Global Base ────────────────────────────────────────────────────── */
+
+QWidget, QWidget QToolTip {
+    background-color: @outer_widget.background.color;
+    color: @font.color;
+    selection-background-color: @color.primary.dim;
+    selection-color: #FFFFFF;
+    font-family: "Segoe UI", "Ubuntu", "Noto Sans", sans-serif;
+}
+
+QToolTip {
+    background-color: @color.surface.medium;
+    color: @font.color.bright;
+    border: 1px solid @color.surface.light;
+    border-radius: 4px;
+    padding: 4px 8px;
+}
+
+QFrame[frameShape="4"] { /* VLine */
+    color: @color.surface.light;
+    background-color: @color.surface.light;
+    max-width: 1px;
+}
+
+
+/* ── Checkboxes ─────────────────────────────────────────────────────── */
+
+QCheckBox::indicator:unchecked {
+  image: url("@style_dir/img/checkbox_unchecked.svg");
+}
+
+QCheckBox::indicator:unchecked:disabled {
+  image: url("@style_dir/img/checkbox_unchecked_disabled.svg");
+}
+
+QCheckBox::indicator:checked {
+  image: url("@style_dir/img/checkbox_checked.svg");
+}
+
+QCheckBox::indicator:checked:disabled {
+  image: url("@style_dir/img/checkbox_checked_disabled.svg");
+}
+
+QCheckBox[warning = "true"] {
+    color: @color.warning;
+}
+
+QCheckBox {
+    spacing: 6px;
+}
+
+/* ── Disabled Inputs ────────────────────────────────────────────────── */
+
+QLineEdit:disabled, QComboBox:disabled, QSpinBox:disabled {
+    color: @disabled.color;
+    background-color: @color.surface.dark;
+}
+
+/* ── Focus States ───────────────────────────────────────────────────── */
+
+QComboBox:focus, QSpinBox:focus, ManageWindow QComboBox:focus {
+    border-color: @focus.border.color;
+    color: @font.color.bright;
+}
+
+QLineEdit:focus {
+    border-color: @focus.border.color;
+}
+
+/* ── Push Buttons ───────────────────────────────────────────────────── */
+
+QPushButton {
+    border: 1px solid @pushbutton.border.color;
+    border-radius: 6px;
+    background-color: @pushbutton.background.color;
+    padding: 5px 12px;
+}
+
+QPushButton:hover {
+    background-color: @color.surface.light;
+    border-color: @color.surface.lighter;
+}
+
+QPushButton:pressed {
+    background-color: @color.surface.darkest;
+}
+
+QPushButton:disabled {
+    background-color: @pushbutton.disabled.background.color;
+    color: @pushbutton.disabled.font.color;
+}
+
+/* ── Tool Buttons ───────────────────────────────────────────────────── */
+
+QToolButton {
+    border: none;
+    border-radius: 4px;
+    padding: 3px;
+}
+
+QToolButton:hover {
+    background-color: @toolbutton.hover.background.color;
+}
+
+/* ── Line Edits ─────────────────────────────────────────────────────── */
+
+QLineEdit {
+    selection-color: @menu.item.selected.font.color;
+    selection-background-color: @menu.item.selected.background.color;
+    background-color: @lineedit.background.color;
+    border: 1px solid @lineedit.border.color;
+    border-radius: 6px;
+    padding: 4px 8px;
+}
+
+/* ── Plain Text Edits ───────────────────────────────────────────────── */
+
+QPlainTextEdit {
+    selection-color: @menu.item.selected.font.color;
+    selection-background-color: @menu.item.selected.background.color;
+    color: @font.color;
+    background-color: @inner_widget.background.color;
+    border: 1px solid @color.surface.light;
+    border-radius: 4px;
+}
+
+/* ── Scroll Bars ────────────────────────────────────────────────────── */
+
+QScrollBar, QTableWidget QScrollBar {
+    background-color: @inner_widget.background.color;
+    border: none;
+}
+
+QScrollBar::vertical {
+    max-width: 8px;
+    border-radius: 4px;
+}
+
+QScrollBar::horizontal {
+    max-height: 8px;
+    border-radius: 4px;
+}
+
+QScrollBar::handle {
+    background-color: @scrollbar.handle.background.color;
+    border-radius: 4px;
+    min-height: 30px;
+}
+
+QScrollBar::handle:hover {
+    background-color: @color.primary.dim;
+}
+
+QScrollBar::add-line, QScrollBar::sub-line, QScrollBar::add-page, QScrollBar::sub-page {
+    height: 0px;
+    width: 0px;
+}
+
+/* ── Combo Boxes ────────────────────────────────────────────────────── */
+
+QComboBox, ManageWindow QComboBox, QSpinBox {
+    border-color: @combobox.border.color;
+    border-radius: 6px;
+    padding: 3px 8px;
+}
+
+QComboxBox:!editable, QComboBox::drop-down  {
+    border-left: 0;
+}
+
+QComboBox::down-arrow {
+    image: url("@style_dir/img/arrow_down.svg");
+    height: 10px;
+    width: 10px;
+    padding-right: 10px;
+}
+
+QComboBox, QComboBox QAbstractItemView, QMenu QAbstractItemView {
+    selection-background-color: @menu.item.selected.background.color;
+    selection-color: @menu.item.selected.font.color;
+    color: @font.color;
+}
+
+QComboBox QAbstractItemView {
+    border: 1px solid @color.surface.light;
+    border-radius: 4px;
+    background-color: @color.surface.medium;
+}
+
+/* ── Spin Boxes ─────────────────────────────────────────────────────── */
+
+QSpinBox {
+    selection-color: @menu.item.selected.font.color;
+    selection-background-color: @menu.item.selected.background.color;
+}
+
+QSpinBox::down-arrow {
+    image: url("@style_dir/img/arrow_down.svg");
+}
+
+QSpinBox::up-arrow {
+    image: url("@style_dir/img/arrow_up.svg");
+}
+
+QSpinBox::up-arrow:disabled, QSpinBox::up-arrow:off, QSpinBox::down-arrow:disabled, QSpinBox::down-arrow:off {
+   image: none;
+}
+
+/* ── Tables ─────────────────────────────────────────────────────────── */
+
+QTableWidget {
+    border: 1px solid @table.border.color;
+    background-color: @inner_widget.background.color;
+    selection-background-color: @table.selection.background.color;
+    gridline-color: @color.surface.medium;
+    alternate-background-color: @color.surface.dark;
+    border-radius: 4px;
+}
+
+QTableWidget * {
+    background-color: none;
+    color: @font.color;
+}
+
+QTableWidget QHeaderView {
+    background-color: @outer_widget.background.color;
+    font-weight: bold;
+}
+
+QTableWidget QHeaderView::section {
+    background-color: @color.surface.dark;
+    color: @font.color.muted;
+    border: none;
+    border-bottom: 2px solid @color.surface.light;
+    padding: 6px 8px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+}
+
+QTableWidget QToolButton:hover {
+    background-color: @table.button.hover.background.color;
+    border-radius: 3px;
+}
+
+/* ── Menus ───────────────────────────────────────────────────────────── */
+
+QMenu {
+    background-color: @color.surface.medium;
+    border: 1px solid @color.surface.light;
+    border-radius: 8px;
+    padding: 4px;
+}
+
+QMenu QPushButton {
+    border-radius: 4px;
+    padding: 6px 10px;
+}
+
+QMenu QPushButton[current = "true"] {
+    color: @color.primary;
+}
+
+QMenu QPushButton:hover {
+    background-color: @menu.item.selected.background.color;
+    color: @menu.item.selected.font.color;
+}
+
+QMenu::separator {
+    height: 1px;
+    background-color: @color.surface.light;
+    margin: 4px 8px;
+}
+
+/* ── Labels ──────────────────────────────────────────────────────────── */
+
+QLabel[error = "true"] {
+    color: @error.color;
+}
+
+/* ── Console / Terminal ──────────────────────────────────────────────── */
+
+QPlainTextEdit[console = 'true'] {
+    background: @console.background.color;
+    color: @console.font.color;
+    font-family: "JetBrains Mono", "Fira Code", "Cascadia Code", "Consolas", monospace;
+    font-size: 11px;
+    border: 1px solid @color.surface.light;
+    border-radius: 6px;
+    padding: 8px;
+}
+
+/* ── Tab Bar ─────────────────────────────────────────────────────────── */
+
+QTabBar {
+    background-color: transparent;
+}
+
+QTabBar::tab {
+    background-color: @color.surface.dark;
+    color: @font.color.muted;
+    border: none;
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
+    padding: 7px 16px;
+    margin-right: 2px;
+}
+
+QTabBar::tab:selected {
+    color: @tab.font.color;
+    border: 1px solid @inner_widget.background.color;
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
+    border-bottom: 2px solid @tab.underline.color;
+    background-color: @tab.highlight.color;
+    padding: 7px 16px;
+    font-weight: 600;
+}
+
+QTabBar::tab:hover:!selected {
+    background-color: @color.surface.medium;
+    color: @font.color;
+}
+
+/* ── Progress Bar ────────────────────────────────────────────────────── */
+
+QProgressBar {
+    background-color: @color.surface.medium;
+    border: none;
+    border-radius: 2px;
+    text-align: center;
+}
+
+QProgressBar::chunk {
+    background-color: @progressbar.fill.color;
+    border-radius: 2px;
+}
+
+QProgressBar#prepare_progress {
+    max-height: 8px;
+    border-radius: 4px;
+}
+
+QProgressBar#prepare_progress::chunk {
+    background-color: @color.accent;
+    border-radius: 4px;
+}
+
+/* ── Search Bar ──────────────────────────────────────────────────────── */
+
+QSearchBar * {
+    background-color: @outer_widget.background.color;
+}
+
+QSearchBar QLabel#lb_left_corner {
+     border-left-color: @lineedit.border.color;
+     border-top-color: @lineedit.border.color;
+     border-bottom-color: @lineedit.border.color;
+     border-top-left-radius: 8px;
+     border-bottom-left-radius: 8px;
+}
+
+QSearchBar QLabel#lb_left_corner[focused = "true"] {
+     border-left-color: @focus.border.color;
+     border-top-color: @focus.border.color;
+     border-bottom-color: @focus.border.color;
+}
+
+QSearchBar QPushButton#search_button {
+    qproperty-icon: url("@style_dir/img/search.svg");
+    border-right-color: @lineedit.border.color;
+    border-top-color: @lineedit.border.color;
+    border-bottom-color: @lineedit.border.color;
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
+}
+
+QSearchBar QPushButton#search_button[focused = "true"] {
+    border-right-color: @focus.border.color;
+    border-top-color: @focus.border.color;
+    border-bottom-color: @focus.border.color;
+    qproperty-icon: url("@style_dir/img/search_focused.svg");
+}
+
+QSearchBar QLineEdit#inp_search {
+     border-bottom-color: @lineedit.border.color;
+     border-top-color: @lineedit.border.color;
+}
+
+QSearchBar QLineEdit#inp_search:focus {
+     border-bottom-color: @focus.border.color;
+     border-top-color: @focus.border.color;
+}
+
+QSearchBar#name_filter QPushButton#search_button {
+    qproperty-icon: url("@style_dir/img/filter.svg");
+}
+
+QSearchBar#name_filter QPushButton#search_button[focused = "true"] {
+    qproperty-icon: url("@style_dir/img/filter_focused.svg");
+}
+
+/* ── Primary OK Button ───────────────────────────────────────────────── */
+
+QPushButton#ok {
+    background-color: @button_ok.background.color;
+    color: @button_ok.font.color;
+    border-color: @button_ok.background.color;
+    font-weight: bold;
+    border-radius: 6px;
+}
+
+QPushButton#ok:hover {
+    background-color: #2EA043;
+}
+
+QPushButton#ok:pressed {
+    background-color: #1A7F37;
+}
+
+/* ── Prepare Panel ───────────────────────────────────────────────────── */
+
+PreparePanel QTableWidget#tasks {
+    background-color: @inner_widget.background.color;
+    border: 1px solid @color.surface.light;
+    border-radius: 6px;
+}
+
+PreparePanel QLabel#task_status[status = "done"], PreparePanel QLabel#task_progress[status = "done"], PreparePanel QLabel#task_substatus[status = "done"] {
+    color: @task.done.color;
+}
+
+PreparePanel QLabel#task_status[status = "running"], QLabel#task_progress[status = "running"], QLabel#task_substatus {
+    font-weight: normal;
+    color: @color.primary.bright;
+}
+
+/* ── Manage Window ───────────────────────────────────────────────────── */
+
+ManageWindow QSearchBar#name_filter {
+    color: @font.color;
+}
+
+ManageWindow QLabel#icon_status {
+    qproperty-pixmap: url("@style_dir/img/refresh.svg");
+    qproperty-scaledContents: True;
+    min-width: 14px;
+    max-width: 14px;
+    min-height: 14px;
+    max-height: 14px;
+    margin-right: 4px;
+}
+
+ManageWindow QLabel#updates_count {
+    font-weight: bold;
+    letter-spacing: 0.5px;
+    padding: 2px 10px;
+    border-radius: 10px;
+    font-size: 11px;
+    background-color: @color.surface.medium;
+    color: @color.accent;
+    border: 1px solid @color.accent.dim;
+}
+
+ManageWindow QLabel#apps_displayed {
+    color: @font.color.muted;
+    font-size: 11px;
+}
+
+/* ── Upgrade Button ──────────────────────────────────────────────────── */
+
+QPushButton#bt_upgrade {
+    qproperty-icon: url("@style_dir/img/update.svg");
+    border: 1px solid @upgrade.color;
+    background: @outer_widget.background.color;
+    color: @upgrade.color;
+    font-weight: 600;
+    border-radius: 6px;
+}
+
+QPushButton#bt_upgrade:hover {
+    background-color: @color.surface.medium;
+}
+
+QPushButton#bt_upgrade:disabled {
+    color: @font.color.muted;
+    border-color: @font.color.muted;
+}
+
+/* ── Upgrade Toggle ──────────────────────────────────────────────────── */
+
+PackagesTable UpgradeToggleButton:disabled {
+    color: @font.color.muted;
+    border-color: @font.color.muted;
+}
+
+PackagesTable QLabel#app_version[update = "true"] {
+    color: @table.app_version.update.color;
+    font-weight: @table.app_version.update.weight;
+}
+
+PackagesTable QLabel#app_version:disabled[update = "true"] {
+    color: @font.color.muted;
+}
+
+PackagesTable QLabel#app_version[ignored = "true"] {
+    color: @table.app_version.update_ignored.color;
+}
+
+PackagesTable QLabel#app_version:disabled[ignored = "true"] {
+    color: @font.color.muted;
+}
+
+PackagesTable UpgradeToggleButton, ConfirmationDialog UpgradeToggleButton {
+    qproperty-icon: url("@style_dir/img/update.svg");
+    border: 1px solid @upgrade.color;
+    border-radius: 3px;
+    background-color: @outer_widget.background.color;
+}
+
+PackagesTable UpgradeToggleButton[toggled = "false"] {
+    qproperty-icon: url("@style_dir/img/update_unchecked.svg");
+    background-color: @inner_widget.background.color;
+    border-color: @color.surface.light;
+}
+
+PackagesTable UpgradeToggleButton[enabled = "false"] {
+    background: @table.update_check.disabled.color;
+}
+
+/* ── Action Bar Buttons (icon-only) ──────────────────────────────────── */
+
+ManageWindow PackagesTable IconButton#app_info {
+    qproperty-icon: url("@style_dir/img/about.svg");
+    qproperty-iconSize: 14px 14px;
+}
+
+QPushButton#bt_refresh {
+    qproperty-icon: url("@style_dir/img/refresh.svg");
+}
+
+QPushButton#bt_installed {
+    qproperty-icon: url("@style_dir/img/installed.svg");
+}
+
+ManageWindow PackagesTable IconButton#app_run {
+    qproperty-icon: url("@style_dir/img/app_play.svg");
+}
+
+ManageWindow PackagesTable IconButton#app_run[_enabled = "false"] {
+    qproperty-icon: url("@style_dir/img/app_play_disabled.svg");
+}
+
+ManageWindow IconButton#suggestions {
+    qproperty-icon: url("@style_dir/img/suggestions.svg");
+}
+
+ManageWindow IconButton#themes {
+    qproperty-icon: url("@style_dir/img/themes.svg");
+}
+
+ManageWindow PackagesTable IconButton#app_actions {
+    qproperty-icon: url("@style_dir/img/menu.svg");
+}
+
+ManageWindow IconButton#settings {
+    qproperty-icon: url("@style_dir/img/settings.svg");
+}
+
+PackagesTable IconButton#app_screenshots {
+    qproperty-icon: url("@style_dir/img/camera.svg");
+}
+
+ManageWindow PackagesTable IconButton#app_screenshots[_enabled = "false"] {
+    qproperty-icon: url("@style_dir/img/camera_disabled.svg");
+}
+
+ManageWindow IconButton#custom_actions {
+    qproperty-icon: url("@style_dir/img/menu.svg");
+    qproperty-iconSize: 16px 16px;
+}
+
+ManageWindow IconButton#about {
+    qproperty-icon: url("@style_dir/img/about.svg");
+    qproperty-iconSize: 16px 16px;
+}
+
+/* ── App Actions Menu ────────────────────────────────────────────────── */
+
+QMenu#app_actions QPushButton#app_history {
+    qproperty-icon: url("@style_dir/img/history.svg");
+}
+
+QMenu#app_actions QPushButton#app_downgrade {
+    qproperty-icon: url("@style_dir/img/downgrade.svg");
+}
+
+QMenu#app_actions QPushButton#ignore_updates {
+    qproperty-icon: url("@style_dir/img/ignore_update.svg");
+}
+
+QMenu#app_actions QPushButton#revert_ignore_updates {
+    qproperty-icon: url("@style_dir/img/revert_update_ignored.svg");
+}
+
+/* ── Publisher Verification ──────────────────────────────────────────── */
+
+PackagesTable QLabel[publisher_known = "false"]{
+    color: @table.app_publisher.unknown.font.color;
+}
+
+PackagesTable QLabel:disabled[publisher_known = "false"]{
+    color: @font.color.muted;
+}
+
+PackagesTable QLabel#icon_publisher_verified {
+    qproperty-pixmap: url("@style_dir/img/verified.svg");
+}
+
+/* ── Install / Uninstall Buttons ─────────────────────────────────────── */
+
+PackagesTable QToolButton#bt_install {
+    background-color: transparent;
+    color: @table.bt_install.font.color;
+    font-size: 10.5px;
+    font-weight: bold;
+    border-radius: 4px;
+    padding: 3px 6px;
+}
+
+PackagesTable QToolButton#bt_install:hover, PackagesTable QToolButton#bt_uninstall:hover {
+    background-color: @table.button.hover.background.color;
+}
+
+PackagesTable QToolButton#bt_install:disabled {
+    color: @font.color.muted;
+}
+
+PackagesTable QToolButton#bt_uninstall {
+    background-color: transparent;
+    color: @table.bt_uninstall.font.color;
+    font-size: 10.5px;
+    font-weight: bold;
+    border-radius: 4px;
+    padding: 3px 6px;
+}
+
+PackagesTable QToolButton#bt_uninstall:disabled {
+    color: @font.color.muted;
+}
+
+/* ── Help / Warning / Tip Icons ──────────────────────────────────────── */
+
+QLabel[help_icon = "true"] {
+    qproperty-pixmap: url("@style_dir/img/question.svg");
+}
+
+QLabel[warning_icon = "true"] {
+    qproperty-pixmap: url("@style_dir/img/warning.svg");
+}
+
+QLabel[tip_icon = "true"] {
+    qproperty-pixmap: url("@style_dir/img/question.svg");
+}
+
+QLabel#confirm_dialog_icon {
+     qproperty-pixmap: url("@style_dir/img/question.svg");
+}
+
+QLabel#confirm_dialog_icon[type = "warning"] {
+     qproperty-pixmap: url("@style_dir/img/warning.svg");
+}
+
+/* ── Table Row Elements ────────────────────────────────────────────────── */
+
+QLabel#app_name {
+    font-size: 13px;
+    font-weight: 500;
+}
+
+QLabel#app_name[installed="true"] {
+    font-weight: bold;
+    color: @font.color.bright;
+}
+
+QLabel#app_name[installed="false"] {
+    color: @font.color;
+}
+
+QLabel#app_name[verified="true"] {
+    /* If we could easily prepend an icon here we would, but QSS on QLabel can't add an inline icon easily without wiping text. So we use color */
+    color: @color.accent;
+}
+
+QLabel#task_status {
+    font-weight: bold;
+    color: @font.color.bright;
+}
+
+QLabel#task_progress {
+    color: @color.accent;
+    font-weight: bold;
+}
+
+QLabel#task_substatus {
+    color: @font.color.muted;
+}
+
+/* ── Dialogs ───────────────────────────────────────────────────────────── */
+
+ConfirmationDialog QPushButton, InfoDialog QPushButton, RootDialog QPushButton {
+    min-width: 80px;
+    font-weight: bold;
+}
+
+QLabel#confirm_dialog_icon[type="info"] {
+    qproperty-pixmap: url("@style_dir/img/info.svg");
+}
+
+QLabel#confirm_dialog_icon[type="warning"] {
+    qproperty-pixmap: url("@style_dir/img/warning.svg");
+}
+
+QLabel#confirm_dialog_icon[type="error"] {
+    /* If there is an error icon */
+    qproperty-pixmap: url("@style_dir/img/warning.svg");
+}
+
+AboutDialog QLabel {
+    text-align: center;
+}
+
+AboutDialog QLabel#app_name {
+    font-size: 24px;
+    font-weight: bold;
+    color: @color.accent;
+}
+
+AboutDialog QLabel#app_version {
+    font-size: 14px;
+    color: @font.color.muted;
+}
+
+AboutDialog QLabel#logo {
+    qproperty-pixmap: url("@style_dir/img/logo.svg");
+}
+
+/* ── Context Menu Actions ────────────────────────────────────────────────── */
+
+QPushButton#app_history {
+    qproperty-icon: url("@style_dir/img/history.svg");
+    text-align: left;
+}
+
+QPushButton#app_downgrade {
+    qproperty-icon: url("@style_dir/img/downgrade.svg");
+    text-align: left;
+}
+
+QPushButton#ignore_updates {
+    qproperty-icon: url("@style_dir/img/ignore_update.svg");
+    text-align: left;
+}
+
+QPushButton#revert_ignore_updates {
+    qproperty-icon: url("@style_dir/img/revert_update_ignored.svg");
+    text-align: left;
+}
+
+/* ── Form Clean Button ───────────────────────────────────────────────── */
+
+FormQt IconButton#clean_field {
+    qproperty-icon: url("@style_dir/img/clean.svg");
+}
+
+/* ── History Dialog ──────────────────────────────────────────────────── */
+
+HistoryDialog QTableWidget QLabel[even = "false"] {
+    background-color: @color.surface.dark;
+}
+
+HistoryDialog QTableWidget QLabel[outdated = "true"] {
+    background-color: @history.version.outdated;
+    color: @history.version.focus.color;
+    border-radius: 3px;
+    padding: 2px 4px;
+}
+
+HistoryDialog QTableWidget QLabel[outdated = "false"] {
+    background-color: @history.version.updated;
+    color: @history.version.focus.color;
+    border-radius: 3px;
+    padding: 2px 4px;
+}
+
+/* ── Info Dialog ─────────────────────────────────────────────────────── */
+
+InfoDialog QPushButton#show {
+    height: 16px;
+    border-radius: 4px;
+}
+
+/* ── Group Box (Forms) ───────────────────────────────────────────────── */
+
+QGroupBox {
+    border: 1px solid @color.surface.light;
+    border-radius: 8px;
+    margin-top: 8px;
+    padding-top: 12px;
+}
+
+QGroupBox::title {
+    subcontrol-origin: margin;
+    left: 12px;
+    padding: 0 6px;
+    color: @color.primary.bright;
+}

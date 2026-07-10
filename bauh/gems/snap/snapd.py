@@ -49,7 +49,7 @@ class SnapdClient:
             return session
         except Exception:
             self.logger.error("Could not establish a connection to 'snapd.socker'")
-            traceback.print_exc()
+            import logging; logging.error("Exception occurred", exc_info=True)
 
     def query(self, query: str) -> Optional[List[dict]]:
         final_query = query.strip()

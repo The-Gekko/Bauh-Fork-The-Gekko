@@ -18,7 +18,7 @@ class CallAsUser:
             os.setuid(getpwnam(self._user).pw_uid)
             return self._target()
         except Exception:
-            traceback.print_exc()
+            import logging; logging.error("Exception occurred", exc_info=True)
 
 
 class WriteToFile:
@@ -34,7 +34,7 @@ class WriteToFile:
 
             return True
         except Exception:
-            traceback.print_exc()
+            import logging; logging.error("Exception occurred", exc_info=True)
             return False
 
 

@@ -61,7 +61,7 @@ class SuggestionsLoader(Thread):
                         self.manager.save_to_disk(self.suggestions, timestamp)
                 except Exception:
                     self.logger.error("Unexpected exception")
-                    traceback.print_exc()
+                    import logging; logging.error("Exception occurred", exc_info=True)
 
         if self.suggestions_callback:
             self.taskman.update_progress(self.task_id, 75, None)
@@ -69,7 +69,7 @@ class SuggestionsLoader(Thread):
                 self.suggestions_callback(self.suggestions)
             except Exception:
                 self.logger.error("Unexpected exception")
-                traceback.print_exc()
+                import logging; logging.error("Exception occurred", exc_info=True)
 
         self.taskman.update_progress(self.task_id, 100, None)
         self.taskman.finish_task(self.task_id)

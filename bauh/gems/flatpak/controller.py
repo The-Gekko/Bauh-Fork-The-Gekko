@@ -320,7 +320,7 @@ class FlatpakManager(SoftwareManager, SettingsController):
             except Exception:
                 watcher.change_substatus('')
                 self.logger.error("An error occurred while upgrading '{}'".format(req.pkg.id))
-                traceback.print_exc()
+                import logging; logging.error("Exception occurred", exc_info=True)
                 return False
 
         watcher.change_substatus('')
@@ -531,7 +531,7 @@ class FlatpakManager(SoftwareManager, SettingsController):
                     pkg.ref = fields[0]
                     pkg.branch = fields[1]
             except Exception:
-                traceback.print_exc()
+                import logging; logging.error("Exception occurred", exc_info=True)
 
         if installed:
             new_installed = [pkg]
@@ -594,7 +594,7 @@ class FlatpakManager(SoftwareManager, SettingsController):
             self.logger.error(f"Local Flatpak suggestions file not found: {self.suggestions_file_url}")
         except OSError:
             self.logger.error(f"Could not read local Flatpak suggestions file: {self.suggestions_file_url}")
-            traceback.print_exc()
+            import logging; logging.error("Exception occurred", exc_info=True)
 
     def _download_remote_suggestions_file(self) -> Optional[str]:
         self.logger.info(f"Downloading the Flatpak suggestions from {self.suggestions_file_url}")
@@ -700,7 +700,7 @@ class FlatpakManager(SoftwareManager, SettingsController):
             if e.__class__.__name__ == 'JSONDecodeError':
                 self.context.logger.error("Could not decode json from '{}'".format(screenshots_url))
             else:
-                traceback.print_exc()
+                import logging; logging.error("Exception occurred", exc_info=True)
 
     def get_settings(self) -> Optional[Generator[SettingsView, None, None]]:
         if not self.context.root_user:
