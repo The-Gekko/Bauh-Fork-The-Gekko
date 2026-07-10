@@ -29,9 +29,11 @@
 
 ## ✨ Características Clave
 - **Optimizado para Arch Linux**: Maneja pacman, AUR y repositorios de terceros como Chaotic AUR en un solo lugar.
+- **Soporte Nativo para Solus OS (eopkg)**: ¡Nuevo! Bauh ahora detecta automáticamente si estás en Solus OS y permite gestionar los paquetes de `eopkg` nativamente.
+- **Clonación de GitHub Segura**: Nuevo módulo para buscar, clonar y construir repositorios desde GitHub de forma local. ¡Viene con protección anti-scripts peligrosos!
+- **Soporte Wayland Total**: Funciona impecablemente en **GNOME**, **KDE Plasma**, **Hyprland** y **Niri** (gracias a PyQt5 nativo).
 - **Velocidad Increíble**: Arquitectura asíncrona ultra optimizada con interfaz sin congelamientos y renderizado silencioso de tablas.
 - **Compilación Inteligente AUR**: Utiliza automáticamente todos los núcleos de tu CPU (`-j$(nproc)`) y detecta dependencias rotas o reconstrucciones necesarias.
-- **Modo Bandeja (Tray)**: Se inicia minimizado en la bandeja del sistema y muestra notificaciones cuando hay actualizaciones de paquetes o de AUR disponibles.
 - **Respaldo del Sistema**: Se integra con [Timeshift](https://github.com/teejee2008/timeshift) para ofrecer un proceso de respaldo simple y seguro antes de realizar un `pacman -Syu`.
 
 ---
