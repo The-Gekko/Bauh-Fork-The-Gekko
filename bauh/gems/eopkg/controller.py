@@ -205,13 +205,18 @@ class EopkgManager(SoftwareManager, SettingsController):
 
         success, output = self._execute_eopkg(['list-upgrades'])
         if success and output:
-            lines = output.strip().split('\n')
-            for line in lines:
-                if ' - ' in line:
-                    parts = line.split(' - ', 1)
-                    name = parts[0].strip()
-                    pkg = EopkgPackage(name=name, update=True)
-                    updates.append(PackageUpdate(pkg_id=name, version='', pkg_type='eopkg', name=name))
+            for line in output.strip().split('\n'):
+                line = line.strip()
+                if not line or ':' in line:
+                    continue
+                
+                parts = line.split()
+                if len(parts) >= 2:
+                    name = parts[0]
+                    # Make sure it looks like a valid package name
+                    if re.match(r'^[a-zA-Z0-9\-\+\._]+$', name):
+                        version = parts[1]
+                        updates.append(PackageUpdate(pkg_id=name, version=version, pkg_type='eopkg', name=name))
         return updates
 
     def list_warnings(self, internet_available: bool) -> Optional[List[str]]:
