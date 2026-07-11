@@ -1,4 +1,5 @@
 import os
+import re
 import shutil
 import subprocess
 from typing import Set, Type, List, Tuple, Optional, Generator
@@ -34,7 +35,9 @@ class EopkgManager(SoftwareManager, SettingsController):
             result = subprocess.run(
                 cmd, capture_output=True, text=True, env=env
             )
-            return result.returncode == 0, result.stdout
+            # Remove ANSI color escape sequences
+            clean_output = re.sub(r'\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])', '', result.stdout)
+            return result.returncode == 0, clean_output
         except Exception:
             return False, ""
 
