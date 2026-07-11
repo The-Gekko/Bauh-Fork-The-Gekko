@@ -21,13 +21,14 @@
 
 ---
 
-**bauh** (pronunciado *baoo*), es una interfaz gráfica para administrar tus paquetes en sistemas Arch Linux. Requiere y aprovecha al máximo los repositorios oficiales de Arch (Pacman), **AUR (Arch User Repository)**, y **Chaotic AUR**.
+**bauh** (pronunciado _baoo_), es una interfaz gráfica para administrar tus paquetes en sistemas Arch Linux. Requiere y aprovecha al máximo los repositorios oficiales de Arch (Pacman), **AUR (Arch User Repository)**, y **Chaotic AUR**.
 
 > [!TIP]
 > **🚀 Actualización v0.10.x (La Actualización Aurora y de Rendimiento)**  
 > ¡Bauh ha sido completamente renovado! Cuenta con un nuevo **tema Aurora**, optimizaciones de rendimiento extremas con carga perezosa (lazy-loading), reducción drástica del consumo de CPU y soporte nativo para compilación veloz.
 
 ## ✨ Características Clave
+
 - **Optimizado para Arch Linux**: Maneja pacman, AUR y repositorios de terceros como Chaotic AUR en un solo lugar.
 - **Soporte Nativo para Solus OS (eopkg)**: ¡Nuevo! Bauh ahora detecta automáticamente si estás en Solus OS y permite gestionar los paquetes de `eopkg` nativamente.
 - **Clonación de GitHub Segura**: Nuevo módulo para buscar, clonar y construir repositorios desde GitHub de forma local. ¡Viene con protección anti-scripts peligrosos!
@@ -45,7 +46,7 @@
 La forma más rápida y segura de instalar `bauh` en Arch Linux. Aísla de forma segura las dependencias usando `pipx` y crea un acceso directo en tu escritorio.
 
 ```bash
-git clone https://github.com/The-Gekko/bauh.git
+git clone https://github.com/The-Gekko/Bauh-Fork-The-Gekko.git
 cd bauh
 ./install.sh
 ```
@@ -56,7 +57,9 @@ del sistema automaticamente: en sistemas Arch puedes instalar pipx con
 confirmaciones, o define `PYTHON_BIN` para elegir el interprete usado por pipx.
 
 ### Instalación Manual (AUR)
+
 Puedes usar tu AUR helper favorito, por ejemplo `yay` o `paru`:
+
 ```bash
 yay -S bauh
 ```
@@ -85,4 +88,5 @@ bauh_env/bin/bauh
 ---
 
 ## 📄 Licencia
+
 Este software se distribuye bajo la licencia **zlib/libpng**. Por favor, revisa el archivo [LICENSE](LICENSE) y [CREDITS.md](CREDITS.md) para más detalles acerca de los términos de autoría y distribución.
