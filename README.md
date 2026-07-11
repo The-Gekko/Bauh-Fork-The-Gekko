@@ -47,7 +47,7 @@ La forma más rápida y segura de instalar `bauh` en Arch Linux. Aísla de forma
 
 ```bash
 git clone https://github.com/The-Gekko/Bauh-Fork-The-Gekko.git
-cd bauh
+cd Bauh-Fork-The-Gekko.git
 ./install.sh
 ```
 
