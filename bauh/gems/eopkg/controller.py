@@ -28,7 +28,7 @@ class EopkgManager(SoftwareManager, SettingsController):
 
     def _execute_eopkg(self, args: List[str]) -> Tuple[bool, str]:
         """Executes an eopkg command and returns (success, output)."""
-        cmd = ['eopkg'] + args
+        cmd = ['eopkg'] + args + ['-N']
         try:
             env = os.environ.copy()
             env['LANG'] = 'en_US.UTF-8'
@@ -103,7 +103,7 @@ class EopkgManager(SoftwareManager, SettingsController):
         watcher.change_substatus(self.i18n.get('eopkg.installing', 'Instalando {}...').format(bold(pkg.name)))
         
         success, output = handler.handle_simple(
-            SimpleProcess(['eopkg', 'install', '-y', pkg.name], root_password=root_password)
+            SimpleProcess(['eopkg', 'install', '-y', '-N', pkg.name], root_password=root_password)
         )
         
         if success:
@@ -124,7 +124,7 @@ class EopkgManager(SoftwareManager, SettingsController):
         watcher.change_substatus(self.i18n.get('eopkg.removing', 'Desinstalando {}...').format(bold(pkg.name)))
         
         success, output = handler.handle_simple(
-            SimpleProcess(['eopkg', 'remove', '-y', pkg.name], root_password=root_password)
+            SimpleProcess(['eopkg', 'remove', '-y', '-N', pkg.name], root_password=root_password)
         )
         
         if success:
@@ -151,7 +151,7 @@ class EopkgManager(SoftwareManager, SettingsController):
             if isinstance(pkg, EopkgPackage):
                 watcher.change_substatus(self.i18n.get('eopkg.upgrading', 'Actualizando {}...').format(bold(pkg.name)))
                 res, _ = handler.handle_simple(
-                    SimpleProcess(['eopkg', 'upgrade', '-y', pkg.name], root_password=root_password)
+                    SimpleProcess(['eopkg', 'upgrade', '-y', '-N', pkg.name], root_password=root_password)
                 )
                 if not res:
                     success = False
