@@ -59,7 +59,7 @@ while (($#)); do
 done
 
 if ! command -v "$PYTHON_BIN" >/dev/null 2>&1; then
-    error "Python interpreter '$PYTHON_BIN' was not found. Set PYTHON_BIN to a Python 3.8-3.12 interpreter."
+    error "Python interpreter '$PYTHON_BIN' was not found. Set PYTHON_BIN to a Python 3.8+ interpreter."
     exit 1
 fi
 
@@ -68,10 +68,10 @@ if ! python_version="$($PYTHON_BIN -c 'import sys; print(f"{sys.version_info.maj
     exit 1
 fi
 
-python_supported="$($PYTHON_BIN -c 'import sys; print((3, 8) <= sys.version_info[:2] <= (3, 12))')"
+python_supported="$($PYTHON_BIN -c 'import sys; print((3, 8) <= sys.version_info[:2] <= (3, 14))')"
 
 if [[ "$python_supported" != 'True' ]]; then
-    error "bauh supports Python versions 3.8 through 3.12; '$PYTHON_BIN' is Python $python_version."
+    error "bauh supports Python versions 3.8 through 3.14; '$PYTHON_BIN' is Python $python_version."
     exit 1
 fi
 
@@ -79,6 +79,39 @@ if ! command -v pipx >/dev/null 2>&1; then
     error "pipx is required but was not found. Install it with your distribution package manager and run this script again."
     error "On Arch-based systems: sudo pacman -S python-pipx"
     exit 1
+fi
+
+# --- Detect and offer to remove the original bauh installed from repos ---
+original_bauh_found=false
+original_bauh_pkg=""
+
+if command -v pacman >/dev/null 2>&1 && pacman -Qi bauh >/dev/null 2>&1; then
+    original_bauh_found=true
+    original_bauh_pkg="pacman"
+elif command -v eopkg >/dev/null 2>&1 && eopkg info bauh 2>/dev/null | grep -q 'Installed'; then
+    original_bauh_found=true
+    original_bauh_pkg="eopkg"
+fi
+
+if [[ "$original_bauh_found" == true ]]; then
+    warning "Se detectó el paquete 'bauh' original instalado desde los repositorios del sistema ($original_bauh_pkg)."
+    warning "Es MUY recomendable desinstalarlo antes de instalar este fork para evitar conflictos."
+
+    if [[ "$ASSUME_YES" != true ]]; then
+        read -r -p '¿Deseas desinstalar el bauh original ahora? [y/N] ' answer
+        if [[ "$answer" =~ ^[Yy]$ ]]; then
+            if [[ "$original_bauh_pkg" == "pacman" ]]; then
+                info "Desinstalando bauh original con pacman..."
+                sudo pacman -Rns --noconfirm bauh || warning "No se pudo desinstalar automáticamente. Hazlo manualmente con: sudo pacman -Rns bauh"
+            elif [[ "$original_bauh_pkg" == "eopkg" ]]; then
+                info "Desinstalando bauh original con eopkg..."
+                sudo eopkg remove -y bauh || warning "No se pudo desinstalar automáticamente. Hazlo manualmente con: sudo eopkg remove bauh"
+            fi
+            info "Bauh original desinstalado. Continuando con la instalación del fork..."
+        else
+            warning "Continuando sin desinstalar. Pueden ocurrir conflictos entre ambas versiones."
+        fi
+    fi
 fi
 
 if [[ -f /etc/pacman.conf ]] && ! grep -qE '^\[chaotic-aur\]' /etc/pacman.conf; then
