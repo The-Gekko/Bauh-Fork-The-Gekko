@@ -12,6 +12,18 @@ class CoreConfigManager(YAMLConfigManager):
     def __init__(self):
         super(CoreConfigManager, self).__init__(config_file_path=FILE_PATH)
 
+    def read_config(self) -> dict:
+        config = super(CoreConfigManager, self).read_config()
+
+        if config:
+            ui_config = config.get('ui')
+            legacy_theme = ui_config.pop('custom_theme', None) if isinstance(ui_config, dict) else None
+
+            if legacy_theme and 'custom_theme' not in config:
+                config['custom_theme'] = legacy_theme
+
+        return config
+
     def get_default_config(self) -> dict:
         return {
             'gems': None,
@@ -45,15 +57,14 @@ class CoreConfigManager(YAMLConfigManager):
                 "auto_scale": False,
                 "scale_factor": 1.0,
                 'theme': 'light',
-                'system_theme': False,
-                'custom_theme': {
-                    'background_color': '#161B22',
-                    'text_color': '#FFFFFF',
-                    'accent_color': '#FF4500',
-                    'opacity': 100,
-                    'background_image': None
-                }
-
+                'system_theme': False
+            },
+            'custom_theme': {
+                'background_color': '#161B22',
+                'text_color': '#FFFFFF',
+                'accent_color': '#FF4500',
+                'opacity': 100,
+                'background_image': None
             },
             'download': {
                 'multithreaded': False,

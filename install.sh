@@ -1,113 +1,149 @@
 #!/usr/bin/env bash
 
-set -e
+set -Eeuo pipefail
 
-# Cambiar al directorio donde está el script para que pipx encuentre pyproject.toml/setup.py
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" &> /dev/null && pwd)"
-cd "$SCRIPT_DIR"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PYTHON_BIN="${PYTHON_BIN:-python3}"
+ASSUME_YES=false
 
-# Colores para la interfaz
-GREEN="\e[32m"
-BLUE="\e[34m"
-YELLOW="\e[33m"
-RED="\e[31m"
-BOLD="\e[1m"
-RESET="\e[0m"
+green='\033[0;32m'
+yellow='\033[0;33m'
+red='\033[0;31m'
+blue='\033[0;34m'
+bold='\033[1m'
+reset='\033[0m'
 
-echo -e "${BLUE}${BOLD}==========================================================${RESET}"
-echo -e "${GREEN}${BOLD}    Bauh - The Ultimate Linux App Manager                 ${RESET}"
-echo -e "${YELLOW}${BOLD}    Fork Modernizado por The-Gekko 🦎𓆈                 ${RESET}"
-echo -e "${BLUE}${BOLD}==========================================================${RESET}\n"
+info() {
+    printf '%b\n' "${blue}[bauh]${reset} $*"
+}
 
-# Check Python version
-if ! command -v python3 &> /dev/null; then
-    echo -e "${RED}[!] Python 3 is required but not found.${RESET}"
+warning() {
+    printf '%b\n' "${yellow}[bauh]${reset} $*"
+}
+
+error() {
+    printf '%b\n' "${red}[bauh]${reset} $*" >&2
+}
+
+usage() {
+    cat <<'EOF'
+Usage: ./install.sh [--yes] [--help]
+
+Installs the current checkout with pipx and creates a user desktop entry.
+
+Environment variables:
+  PYTHON_BIN  Python interpreter to create the pipx environment (default: python3)
+
+Options:
+  --yes       Continue without interactive confirmations.
+  --help       Show this help message.
+EOF
+}
+
+while (($#)); do
+    case "$1" in
+        --yes|-y)
+            ASSUME_YES=true
+            ;;
+        --help|-h)
+            usage
+            exit 0
+            ;;
+        *)
+            error "Unknown option: $1"
+            usage >&2
+            exit 2
+            ;;
+    esac
+    shift
+done
+
+if ! command -v "$PYTHON_BIN" >/dev/null 2>&1; then
+    error "Python interpreter '$PYTHON_BIN' was not found. Set PYTHON_BIN to a Python 3.8-3.12 interpreter."
     exit 1
 fi
 
-PY_VERSION=$(python3 -c 'import sys; print(f"{sys.version_info.major}.{sys.version_info.minor}")')
-echo -e "${GREEN}[+] Detected Python version: ${PY_VERSION}${RESET}"
+if ! python_version="$($PYTHON_BIN -c 'import sys; print(f"{sys.version_info.major}.{sys.version_info.minor}")')"; then
+    error "Could not determine the version of '$PYTHON_BIN'."
+    exit 1
+fi
 
-# Verificar si tiene habilitado Chaotic AUR
-if [ -f /etc/pacman.conf ]; then
-    if ! grep -qi "chaotic-aur" /etc/pacman.conf; then
-        echo -e "${YELLOW}[!] ADVERTENCIA: No se encontró el repositorio [chaotic-aur] en /etc/pacman.conf.${RESET}"
-        echo -e "${YELLOW}[!] Este fork está diseñado y optimizado específicamente para trabajar con Chaotic AUR.${RESET}"
-        read -p "    ¿Deseas continuar con la instalación de todos modos? (y/n): " -n 1 -r
-        echo
-        if [[ ! $REPLY =~ ^[Yy]$ ]]; then
-            echo -e "${RED}[*] Instalación abortada por el usuario.${RESET}"
-            exit 1
+python_supported="$($PYTHON_BIN -c 'import sys; print((3, 8) <= sys.version_info[:2] <= (3, 12))')"
+
+if [[ "$python_supported" != 'True' ]]; then
+    error "bauh supports Python versions 3.8 through 3.12; '$PYTHON_BIN' is Python $python_version."
+    exit 1
+fi
+
+if ! command -v pipx >/dev/null 2>&1; then
+    error "pipx is required but was not found. Install it with your distribution package manager and run this script again."
+    error "On Arch-based systems: sudo pacman -S python-pipx"
+    exit 1
+fi
+
+if [[ -f /etc/pacman.conf ]] && ! grep -qE '^\[chaotic-aur\]' /etc/pacman.conf; then
+    warning "The chaotic-aur repository was not found in /etc/pacman.conf."
+    warning "This fork is optimized for Arch Linux systems that enable Chaotic AUR."
+
+    if [[ "$ASSUME_YES" != true ]]; then
+        read -r -p 'Continue anyway? [y/N] ' answer
+        if [[ ! "$answer" =~ ^[Yy]$ ]]; then
+            info 'Installation cancelled.'
+            exit 0
         fi
-    else
-        echo -e "${GREEN}[+] Repositorio Chaotic AUR detectado en el sistema.${RESET}"
     fi
 fi
 
-# Ensure pipx is installed
-if ! command -v pipx &> /dev/null; then
-    echo -e "${YELLOW}[*] pipx no está instalado. pipx es necesario para aislar las dependencias de forma segura.${RESET}"
-    echo -e "${YELLOW}[*] Intentando instalar pipx automáticamente...${RESET}"
-    
-    if command -v apt-get &> /dev/null; then
-        sudo apt-get update && sudo apt-get install -y pipx
-    elif command -v pacman &> /dev/null; then
-        # En Arch Linux el paquete se llama python-pipx
-        sudo pacman -S --noconfirm python-pipx
-    elif command -v dnf &> /dev/null; then
-        sudo dnf install -y pipx
-    else
-        echo -e "${RED}[!] Gestor de paquetes no soportado automáticamente. Por favor instala 'pipx' manualmente y vuelve a ejecutar este script.${RESET}"
-        exit 1
-    fi
-    pipx ensurepath
+pipx_bin_dir="$(pipx environment --value PIPX_BIN_DIR 2>/dev/null || true)"
+if [[ -z "$pipx_bin_dir" ]]; then
+    pipx_bin_dir="$HOME/.local/bin"
 fi
 
-if command -v ~/.local/bin/bauh &> /dev/null || command -v bauh &> /dev/null; then
-    echo -e "${YELLOW}[?] Bauh ya parece estar instalado en tu sistema.${RESET}"
-    read -p "    ¿Deseas actualizarlo/reinstalarlo con los nuevos cambios? (y/n): " -n 1 -r
-    echo
-    if [[ ! $REPLY =~ ^[Yy]$ ]]; then
-        echo -e "${YELLOW}[*] Instalación cancelada. ¡Disfruta de Bauh!${RESET}"
-        exit 0
-    fi
-    echo -e "${BLUE}[+] Actualizando Bauh a través de pipx...${RESET}"
-else
-    echo -e "${BLUE}[+] Instalando Bauh a través de pipx...${RESET}"
+info "Installing bauh with $PYTHON_BIN (Python $python_version)..."
+pipx install --force --python "$PYTHON_BIN" "$SCRIPT_DIR"
+
+bauh_bin="$pipx_bin_dir/bauh"
+if [[ ! -x "$bauh_bin" ]]; then
+    error "pipx completed but '$bauh_bin' was not created. Check 'pipx list' for details."
+    exit 1
 fi
 
-pipx install --force .
+icon_source="$SCRIPT_DIR/bauh/view/resources/img/logo.svg"
+if [[ ! -f "$icon_source" ]]; then
+    error "Application icon was not found: $icon_source"
+    exit 1
+fi
 
-echo -e "${BLUE}[+] Copiando icono de la aplicación...${RESET}"
-mkdir -p ~/.local/share/icons/hicolor/scalable/apps/
-cp "$SCRIPT_DIR/bauh/view/resources/img/logo.svg" ~/.local/share/icons/hicolor/scalable/apps/bauh.svg
-cp "$SCRIPT_DIR/bauh/view/resources/img/logo.svg" ~/.local/share/icons/bauh.svg
+icon_dir="$HOME/.local/share/icons/hicolor/scalable/apps"
+applications_dir="$HOME/.local/share/applications"
+desktop_file="$applications_dir/bauh.desktop"
 
-echo -e "${BLUE}[+] Creando acceso directo en el escritorio (Desktop Entry)...${RESET}"
-mkdir -p ~/.local/share/applications/
-cat <<EOF > ~/.local/share/applications/bauh.desktop
+info 'Installing icon and desktop entry...'
+install -Dm644 "$icon_source" "$icon_dir/bauh.svg"
+mkdir -p "$applications_dir"
+
+cat > "$desktop_file" <<EOF
 [Desktop Entry]
+Type=Application
 Name=Bauh Fork The-Gekko
-Comment=Manage your Linux applications
-Exec=$HOME/.local/bin/bauh
+Comment=Manage Linux applications
+Exec="$bauh_bin"
 Icon=bauh
 Terminal=false
-Type=Application
 Categories=System;Settings;PackageManager;
 EOF
 
-# Actualizar base de datos de escritorios e iconos para Gnome
-if command -v update-desktop-database &> /dev/null; then
-    update-desktop-database ~/.local/share/applications/
-fi
-if command -v gtk-update-icon-cache &> /dev/null; then
-    gtk-update-icon-cache -f -t ~/.local/share/icons/ &> /dev/null || true
+if command -v update-desktop-database >/dev/null 2>&1; then
+    update-desktop-database "$applications_dir" || warning 'Could not update the desktop database.'
 fi
 
+if command -v gtk-update-icon-cache >/dev/null 2>&1; then
+    gtk-update-icon-cache -f -t "$HOME/.local/share/icons" || warning 'Could not update the icon cache.'
+fi
 
-echo -e "\n${GREEN}${BOLD}==========================================================${RESET}"
-echo -e "${GREEN}${BOLD}    ¡Instalación Completada con Éxito! 🚀                 ${RESET}"
-echo -e "${GREEN}${BOLD}==========================================================${RESET}"
-echo -e "${YELLOW}Nota:${RESET} Ahora puedes ejecutar Bauh desde el menú de aplicaciones de tu sistema."
-echo -e "O simplemente escribiendo ${BOLD}'bauh'${RESET} en tu terminal."
-echo -e "Si el comando 'bauh' no se encuentra, es posible que necesites reiniciar tu terminal.\n"
+printf '%b\n' "${green}${bold}bauh was installed successfully.${reset}"
+printf 'Run it from your application menu or with: %s\n' "$bauh_bin"
+
+if [[ ":$PATH:" != *":$pipx_bin_dir:"* ]]; then
+    warning "'$pipx_bin_dir' is not in PATH. Run 'pipx ensurepath' and open a new terminal to use 'bauh' by name."
+fi

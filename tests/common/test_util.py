@@ -1,6 +1,8 @@
+import inspect
+from datetime import datetime, timezone
 from unittest import TestCase
 
-from bauh.commons.util import size_to_byte, sanitize_command_input
+from bauh.commons.util import datetime_as_milis, size_to_byte, sanitize_command_input
 
 
 class SizeToByteTest(TestCase):
@@ -89,3 +91,16 @@ class SanitizeCommandInputTest(TestCase):
         input_ = '--cat abc-def --user -system ghi--jkl --xpto '
         res = sanitize_command_input(input_)
         self.assertEqual('abc-def ghi--jkl', res)
+
+
+class DatetimeAsMilisTest(TestCase):
+
+    def test__must_not_evaluate_the_current_time_when_the_module_is_imported(self):
+        default = inspect.signature(datetime_as_milis).parameters['date'].default
+
+        self.assertIsNone(default)
+
+    def test__must_convert_an_aware_datetime_to_milliseconds(self):
+        date = datetime(1970, 1, 1, 0, 0, 1, tzinfo=timezone.utc)
+
+        self.assertEqual(1000, datetime_as_milis(date))

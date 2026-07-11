@@ -45,10 +45,15 @@
 La forma más rápida y segura de instalar `bauh` en Arch Linux. Aísla de forma segura las dependencias usando `pipx` y crea un acceso directo en tu escritorio.
 
 ```bash
-git clone https://github.com/vinifmor/bauh.git
+git clone https://github.com/The-Gekko/bauh.git
 cd bauh
 ./install.sh
 ```
+
+El instalador requiere `pipx` y Python entre 3.8 y 3.12. No instala paquetes
+del sistema automaticamente: en sistemas Arch puedes instalar pipx con
+`sudo pacman -S python-pipx`. Usa `./install.sh --yes` para continuar sin
+confirmaciones, o define `PYTHON_BIN` para elegir el interprete usado por pipx.
 
 ### Instalación Manual (AUR)
 Puedes usar tu AUR helper favorito, por ejemplo `yay` o `paru`:

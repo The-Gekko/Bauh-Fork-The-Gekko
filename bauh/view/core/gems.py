@@ -1,6 +1,5 @@
 import inspect
 import os
-import pkgutil
 import importlib.util
 from logging import Logger
 from typing import List, Generator
@@ -14,7 +13,7 @@ FORBIDDEN_GEMS_FILE = f'/etc/{__app_name__}/gems.forbidden'
 
 def find_manager(member):
     if not isinstance(member, str):
-        if inspect.isclass(member) and inspect.getmro(member)[1].__name__ == 'SoftwareManager':
+        if inspect.isclass(member) and issubclass(member, SoftwareManager) and member is not SoftwareManager:
             return member
         elif inspect.ismodule(member):
             for name, mod in inspect.getmembers(member):
@@ -51,10 +50,13 @@ def load_managers(locale: str, context: ApplicationContext, config: dict, defaul
                 continue
 
             spec = importlib.util.find_spec(f'bauh.gems.{f.name}.controller')
-            loader = spec.loader if spec else None
-
-            if loader:
-                module = loader.load_module()
+            if spec and spec.loader:
+                try:
+                    module = importlib.util.module_from_spec(spec)
+                    spec.loader.exec_module(module)
+                except Exception:
+                    logger.exception(f"gem '{f.name}' could not be loaded")
+                    continue
 
                 manager_class = find_manager(module)
 
